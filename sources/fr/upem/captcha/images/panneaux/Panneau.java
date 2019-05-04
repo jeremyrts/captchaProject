@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import fr.upem.captcha.Main;
 import fr.upem.captcha.images.Images;
@@ -12,11 +13,18 @@ import fr.upem.captcha.images.Images;
 public class Panneau implements Images {
 	
 	private List<URL> imagesURL;
+	private int numberURL; 
 	
 	public Panneau(){
 		imagesURL = new ArrayList<>();
-		// A l'initialisation, on ajoute toutes les URL d'images du package
+		numberURL = 0;
+		// A l'initialisation, on ajoute toutes les URL d'images du package et on incrémente le nombre
 		imagesURL.add(Panneau.class.getResource("panneau 70.jpg"));
+		numberURL++;
+		imagesURL.add(Panneau.class.getResource("panneau2.jpg"));
+		numberURL++;
+		imagesURL.add(Panneau.class.getResource("panneau3.jpg"));
+		numberURL++;
 	}
 
 	@Override
@@ -26,14 +34,27 @@ public class Panneau implements Images {
 
 	@Override
 	public List<URL> getRandomPhotosURL() {
-		// TODO Auto-generated method stub
-		return null;
+		List<URL> randomLink = new ArrayList();
+		Random rand = new Random();
+		int number = 0;
+		
+		// Combien d'image vont s'afficher
+		while (number == 0) {
+			number = rand.nextInt(5);
+		}
+		// Quelles images vont s'afficher
+		for (int i = 0; i < number; i++) {
+			randomLink.add(this.getRandomPhotoURL());
+		}
+		
+		return randomLink;
 	}
 
 	@Override
 	public URL getRandomPhotoURL() {
-		// TODO Auto-generated method stub
-		return null;
+		Random rand = new Random();
+		int value = rand.nextInt(numberURL);
+		return this.imagesURL.get(value);
 	}
 
 	@Override
