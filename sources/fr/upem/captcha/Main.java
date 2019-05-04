@@ -1,6 +1,7 @@
 package fr.upem.captcha;
 
 import java.awt.Color;
+
 import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -11,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -22,14 +25,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
+import fr.upem.captcha.images.Images;
 import fr.upem.captcha.images.panneaux.Panneau;
 import fr.upem.captcha.images.voitures.Voiture;
 
 public class Main {
 	
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
+	private static int numberOfImages = 7;
+	private static String theme = "Voiture";
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException {
 		JFrame frame = new JFrame("Capcha"); // Création de la fenêtre principale
 		
 		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
@@ -50,14 +56,42 @@ public class Main {
 		
 		//System.out.println(getTheme());
 		
-		final String theme = getTheme();
 		
-		frame.add(createLabelImage(panneaux.getPhotos().get(0)));
-		frame.add(createLabelImage(voitures.getPhotos().get(0)));
-		frame.add(createLabelImage(voitures.getPhotos().get(1)));
+		
+		
+		/* Etape 1 : définir le thème */
+		
+		//final String theme = "voiture";
+		
+		/* Etape 2 : récupérer aléatoirement les images nécessaires */
+		
+		// Entre 1 et 4 images correpondant au thème, nombre Ntheme
+		// Nombre Nautre des autres thèmes, Nautre = 9 - Ntheme 
+		
+		List<URL> imagesToDisplay = new ArrayList();
+		 
+		// Variable pour définir le nombre d'image correcte, à utiliser pour la vérification
+		// Pour l'instant on choisit deux images du thème
+		
+		imagesToDisplay.add(voitures.getRandomPhotoURL());
+		imagesToDisplay.add(voitures.getRandomPhotoURL());
+		imagesToDisplay.add(panneaux.getRandomPhotoURL());
+		
+		// Boucle pour ajouter les images au viewer
+		
+		for (URL url : imagesToDisplay) {
+			frame.add(createLabelImage(url));
+		}
+		
+		
+		// Ensuite il faut vérifier et rajouter la vérification au bouton 
+		
+		//frame.add(createLabelImage(panneaux.getPhotos().get(0)));
+		//frame.add(createLabelImage(voitures.getPhotos().get(0)));
+		//frame.add(createLabelImage(voitures.getPhotos().get(1)));
 
 		
-
+		
 		
 		//frame.add(createLabelImage("images/panneaux/panneau 70.jpg")); //ajouter des composants à la fenêtre
 		//frame.add(createLabelImage("le havre.jpg"));
@@ -86,6 +120,9 @@ public class Main {
 		//System.out.println("L'url à checker est : "+urlToCheck);
 		
 		//System.out.println(panneau.isPhotoCorrect(urlToCheck));
+		
+		
+		
 	}
 	
 	
@@ -109,6 +146,29 @@ public class Main {
 		return theme;
 	}
 	
+	private static void getImagesToDisplay() {
+		
+	}
+	
+	private static boolean checkImage() {
+		Voiture voiture = new Voiture();
+		boolean verif = true;
+		Iterator iter = selectedImages.iterator();
+		if(!iter.hasNext()) {
+			verif = false;
+		}
+		while(verif && iter.hasNext()) {
+			if(!voiture.isPhotoCorrect((URL)iter.next())) {
+				verif = false; // L'image n'est pas dans le package du thème
+			}
+		}
+		//System.out.println("Verif est "+verif);
+		return verif;
+//		for (Iterator iterator = selectedImages.iterator(); iterator.hasNext();) {
+//			URL url = (URL) iterator.next();
+//			
+//		}
+	}
 	
 	private static GridLayout createLayout(){
 		return new GridLayout(4,3);
@@ -124,6 +184,14 @@ public class Main {
 					@Override
 					public void run() { // c'est un runnable
 						System.out.println("J'ai cliqué sur Ok");
+						//System.out.println(selectedImages.get(0)); // Il faut que ça contienne quelque chose
+						if(!checkImage()) {
+							System.out.println("FAUX");
+						}
+						else {
+							System.out.println("VALIDE");
+						}
+						
 					}
 				});
 			}
@@ -174,6 +242,7 @@ public class Main {
 							label.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
 							isSelected = true;
 							selectedImages.add(urlImage);
+							System.out.println(urlImage.getPath().contains("voiture"));
 						}
 						else {
 							label.setBorder(BorderFactory.createEmptyBorder());
