@@ -34,6 +34,7 @@ public class Main {
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 	private static int numberOfImages = 7;
 	private static String theme = "Voiture";
+	private static int numberImage;
 	
 	public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException {
 		JFrame frame = new JFrame("Capcha"); // Création de la fenêtre principale
@@ -77,6 +78,8 @@ public class Main {
 		imagesToDisplay.add(voitures.getRandomPhotoURL());
 		imagesToDisplay.add(panneaux.getRandomPhotoURL());
 		
+		numberImage = 2;
+		
 		// Boucle pour ajouter les images au viewer
 		
 		for (URL url : imagesToDisplay) {
@@ -86,43 +89,10 @@ public class Main {
 		
 		// Ensuite il faut vérifier et rajouter la vérification au bouton 
 		
-		//frame.add(createLabelImage(panneaux.getPhotos().get(0)));
-		//frame.add(createLabelImage(voitures.getPhotos().get(0)));
-		//frame.add(createLabelImage(voitures.getPhotos().get(1)));
-
-		
-		
-		
-		//frame.add(createLabelImage("images/panneaux/panneau 70.jpg")); //ajouter des composants à la fenêtre
-		//frame.add(createLabelImage("le havre.jpg"));
-		//frame.add(createLabelImage("panneau 70.jpg"));
-		//frame.add(createLabelImage("panneaubleu-carre.jpeg"));
-		//frame.add(createLabelImage("parking.jpg"));
-		//frame.add(createLabelImage("route panneau.jpg"));
-		//frame.add(createLabelImage("tour eiffel.jpg"));
-		//frame.add(createLabelImage("ville espace verts.jpg"));
-		//frame.add(createLabelImage("voie pieton.jpg"));
-		
-		
-		
+	
 		frame.add(new JTextArea("Cliquez n'importe où ... juste pour tester l'interface !"));
-		
-		
 		frame.add(okButton);
-		
-		frame.setVisible(true);
-		
-		//Panneau panneau = new Panneau();
-		
-		//System.out.println(panneau.getPhotos());
-		
-		//URL urlToCheck = Main.class.getResource("images/Voitures/parking.jpg");
-		//System.out.println("L'url à checker est : "+urlToCheck);
-		
-		//System.out.println(panneau.isPhotoCorrect(urlToCheck));
-		
-		
-		
+		frame.setVisible(true);	
 	}
 	
 	
@@ -153,17 +123,26 @@ public class Main {
 	private static boolean checkImage() {
 		Voiture voiture = new Voiture();
 		boolean verif = true;
-		Iterator iter = selectedImages.iterator();
-		if(!iter.hasNext()) {
-			verif = false;
+		
+		/* On vérifie que le nombre d'image selectionné est bon */
+		
+		if(selectedImages.size() != numberImage) {
+			return false;
 		}
-		while(verif && iter.hasNext()) {
-			if(!voiture.isPhotoCorrect((URL)iter.next())) {
-				verif = false; // L'image n'est pas dans le package du thème
+		else {
+			Iterator iter = selectedImages.iterator();
+			if(!iter.hasNext()) {
+				verif = false;
 			}
+			while(verif && iter.hasNext()) {
+				if(!voiture.isPhotoCorrect((URL)iter.next())) {
+					verif = false; // L'image n'est pas dans le package du thème
+				}
+			}
+			//System.out.println("Verif est "+verif);
+			return verif;
 		}
-		//System.out.println("Verif est "+verif);
-		return verif;
+		
 //		for (Iterator iterator = selectedImages.iterator(); iterator.hasNext();) {
 //			URL url = (URL) iterator.next();
 //			
