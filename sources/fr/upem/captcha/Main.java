@@ -32,18 +32,44 @@ import fr.upem.captcha.ui.MainUI;
 
 public class Main {
 	
-	
+	private static String theme = "Voiture";
 	
 	public static void main(String[] args) throws IOException{
 		// Affichage de l'UI
 		MainUI ui = new MainUI();
-		ui.run();
+		ui.run(theme);
 		
 		// Vérification : est ce que le captcha est bon ? 
 			// OUI
 			// Message de validation, fin du programme
 		
-			// NON 
-			// On update la fenêtre avec de nouvelles images
+			/* NON 
+				On update la fenêtre avec de nouvelles images 
+			*/
+		
+		// Redefinition du thème 
+		// theme = getTheme()
+		
+		// ui.update(theme)
+		
+		
+	}
+	
+	private static String getTheme() {
+		Random rand = new Random();
+		int value = rand.nextInt(2);
+		String theme = new String();
+		
+		switch(value) {
+		case 0: 
+			theme = "Voiture";
+			break;
+		case 1:
+			theme = "Panneau";
+			break;
+		default:
+			break;
+		}
+		return theme;
 	}
 }
