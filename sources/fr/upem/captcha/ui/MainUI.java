@@ -34,10 +34,9 @@ public class MainUI {
 	
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 	private static int numberOfImages = 7;
-	private static String theme = "Voiture";
 	private static int numberImage;
 	
-	public void run() throws IOException {
+	public void run(String theme) throws IOException {
 		JFrame frame = new JFrame("Capcha"); // Création de la fenêtre principale
 		
 		
@@ -56,11 +55,8 @@ public class MainUI {
 		Voiture voitures = new Voiture();
 				
 		System.out.println("Layout principal crée");
-		/* Etape 1 : définir le thème */
 		
-		// theme = getTheme()
-		
-		/* Etape 2 : récupérer aléatoirement les images nécessaires */
+		/* Etape 1 : récupérer aléatoirement les images nécessaires */
 		
 		// Entre 1 et 4 images correpondant au thème, nombre Ntheme
 		// Nombre Nautre des autres thèmes, Nautre = 9 - Ntheme 
@@ -86,7 +82,7 @@ public class MainUI {
 		
 		
 		
-		/* Etape 3 : Ensuite il faut rajouter la vérification au bouton */
+		/* Etape 2 : Ensuite il faut rajouter la vérification au bouton */
 		
 	
 		frame.add(new JTextArea("Résultat : "));
@@ -96,25 +92,13 @@ public class MainUI {
 	}
 	
 	
+	public void update() {
+		
+	}
+	
 	/* Défini le thème du captcha */
 	
-	private static String getTheme() {
-		Random rand = new Random();
-		int value = rand.nextInt(2);
-		String theme = new String();
-		
-		switch(value) {
-		case 0: 
-			theme = "Voiture";
-			break;
-		case 1:
-			theme = "Panneau";
-			break;
-		default:
-			break;
-		}
-		return theme;
-	}
+	
 	
 	
 	private static boolean checkImage() {
@@ -248,9 +232,6 @@ public class MainUI {
 				});				
 			}
 		});
-		
-		//label.addComponentListener(frame.getContentPane().getComponent(5).getComponentListeners()[0]); // 5 c'est pour l'instant, il faudra binder ça
-		
 		return label;
 	}
 }
