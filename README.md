@@ -10,7 +10,10 @@
 <i>cp sources/fr/upem/captcha/images/panneaux/*jpg classes/fr/upem/captcha/images/panneaux<i><br/>
 <i>cp sources/fr/upem/captcha/images/voitures/*jpg classes/fr/upem/captcha/images/voitures<i>
 
+<h3>Récupération de l'exécutable jar</h3>
 
+<i>cd classes</i><br/>
+<i>jar cvmf META-INF/MANIFEST.MF CaptchaProject.jar *</i>
 
 <h3>Execution</h3>
 
