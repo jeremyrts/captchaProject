@@ -3,7 +3,7 @@
 ## Installation
 <h3>Compilation</h3> 
 
-<i>javac -sourcepath sources -d classes sources/fr/upem/captcha/Main.java && cp sources/META-INF/MANIFEST.MF classes</i>
+<i>javac -sourcepath sources -d classes sources/fr/upem/captcha/Main.java && cp sources/META-INF/MANIFEST.MF classes/META-INF</i>
 
 <h3>Récupération des fichiers images</h3>
 
