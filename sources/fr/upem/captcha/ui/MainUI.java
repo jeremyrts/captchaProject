@@ -33,10 +33,11 @@ import fr.upem.captcha.images.voitures.Voiture;
 public class MainUI {
 	
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
-	private static int numberOfImages = 7;
-	private static int numberImage;
+	private static int numberOfImages = 4;
+	private static int numberGoodImages;
+	private Object themeObject;
 	
-	public void run(String theme) throws IOException {
+	public void run(String theme) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		JFrame frame = new JFrame("Capcha"); // Création de la fenêtre principale
 		
 		
@@ -49,10 +50,20 @@ public class MainUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Lorsque l'on ferme la fenêtre on quitte le programme.
 		 
 		
-		JButton okButton = createOkButton(frame);
+		JButton okButton = createOkButton(frame, theme);
+		
+		// Classe de toutes les images (peu importe le thème)
 		
 		Panneau panneaux = new Panneau();
 		Voiture voitures = new Voiture();
+		
+		// Classe particulière concernant le thème
+		Object themeObject = Class.forName(theme).newInstance();
+		
+		
+		
+		System.out.println(themeObject.getClass().getPackage().getName());
+		
 				
 		System.out.println("Layout principal crée");
 		
@@ -66,11 +77,30 @@ public class MainUI {
 		// Variable pour définir le nombre d'image correcte, à utiliser pour la vérification
 		// Pour l'instant on choisit deux images du thème
 		
-		numberImage = 2;
+		numberGoodImages = 2;
 		
-		imagesToDisplay.add(voitures.getRandomPhotoURL());
-		imagesToDisplay.add(voitures.getRandomPhotoURL());
-		imagesToDisplay.add(panneaux.getRandomPhotoURL());
+		System.out.println("Le thème est : "+themeObject.getClass().getPackage().getName());
+		System.out.println(voitures.getClass().getPackage().getName());
+		System.out.println(panneaux.getClass().getPackage().getName());
+		System.out.println(panneaux.getClass().getPackage().getName() == themeObject.getClass().getPackage().getName());
+		
+		if((panneaux.getClass().getPackage().getName() == themeObject.getClass().getPackage().getName())) {
+			for(int i=0; i<numberGoodImages; i++) {
+				imagesToDisplay.add(panneaux.getRandomPhotoURL());
+			}
+			for(int i=0; i<numberOfImages-numberGoodImages; i++) {
+				imagesToDisplay.add(voitures.getRandomPhotoURL());
+			}
+			
+		}
+		else {
+			for(int i=0; i<numberGoodImages; i++) {
+				imagesToDisplay.add(voitures.getRandomPhotoURL());
+			}
+			for(int i=0; i<numberOfImages-numberGoodImages; i++) {
+				imagesToDisplay.add(panneaux.getRandomPhotoURL());
+			}
+		}
 		
 		System.out.println(imagesToDisplay);
 		
@@ -85,6 +115,7 @@ public class MainUI {
 		/* Etape 2 : Ensuite il faut rajouter la vérification au bouton */
 		
 	
+		frame.add(new JTextArea("Cliquez sur les images correspondant à "+theme));
 		frame.add(new JTextArea("Résultat : "));
 		frame.add(okButton);
 		frame.setVisible(true);	
@@ -101,22 +132,22 @@ public class MainUI {
 	
 	
 	
-	private static boolean checkImage() {
-		Voiture voiture = new Voiture(); // Parce que c'est le thème
+	private static boolean checkImage(String theme) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		//Voiture voiture = new Voiture(); // Parce que c'est le thème
+		Object classTheme = Class.forName(theme).newInstance();
 		boolean verif = true;
-		
 		/* On vérifie que le nombre d'image selectionné est bon */
 		
-		if(selectedImages.size() != numberImage) {
+		if(selectedImages.size() != numberGoodImages) {
 			return false;
 		}
 		else {
-			Iterator iter = selectedImages.iterator();
+			Iterator<URL> iter = selectedImages.iterator();
 			if(!iter.hasNext()) {
 				verif = false;
 			}
 			while(verif && iter.hasNext()) {
-				if(!voiture.isPhotoCorrect((URL)iter.next())) {
+				if(!((Images) classTheme).isPhotoCorrect((URL)iter.next())) {
 					verif = false; // L'image n'est pas dans le package du thème
 				}
 			}
@@ -128,7 +159,7 @@ public class MainUI {
 		return new GridLayout(4,3);
 	}
 	
-	private static JButton createOkButton(JFrame frame){
+	private static JButton createOkButton(JFrame frame, String theme){
 		return new JButton(new AbstractAction("Vérifier") { //ajouter l'action du bouton
 			
 			@Override
@@ -140,37 +171,40 @@ public class MainUI {
 					@Override
 					public void run() { // c'est un runnable
 						System.out.println("J'ai cliqué sur Ok");
-						if(!checkImage()) {
-							System.out.println("FAUX");
-							System.out.println(frame.getContentPane().getComponent(layoutElement - 2));
-							((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("FAUX !");
-							
-						}
-						else {
-							System.out.println("VALIDE");
-							System.out.println(selectedImages);
-							((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("VRAI !");
+						try {
+							if(!checkImage(theme)) {
+								System.out.println("FAUX");
+								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("FAUX !");
+								System.out.println("Nombre d'images sélectionnée : "+selectedImages.size());
+								selectedImages.clear();
+								System.out.println("Nombre d'images sélectionnée : "+selectedImages.size());
+							}
+							else {
+								System.out.println("VALIDE");
+								System.out.println(selectedImages);
+								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("VRAI !");
+								System.out.println("Nombre d'images sélectionnée : "+selectedImages.size());
+								selectedImages.clear();
+								System.out.println("Nombre d'images sélectionnée : "+selectedImages.size());
+							}
+						} catch (InstantiationException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
 						}
 						
-						// Récupérer les index des images selectionnées et les déslectionner
+						// Récupérer les index des images selectionnées et les déselectionner
 						
-						for (int i = 0; i<layoutElement - 2; i++) {
+						for (int i = 0; i<layoutElement - 3; i++) {
 							((JLabel)frame.getContentPane().getComponent(i)).setBorder(null);
 							
-						}
-						
-						for (URL url : selectedImages) {
-							selectedImages.remove(0);
-							System.out.println("Image removed");
-						}
-						
-						
-						
-						
-						
+						}	
+						selectedImages.clear();
 					}
+					
 				});
-				
 			}
 		});
 	}
@@ -187,7 +221,6 @@ public class MainUI {
 		final JLabel label = new JLabel(new ImageIcon(sImage)); // créer le composant pour ajouter l'image dans la fenêtre
 		
 		label.addMouseListener(new MouseListener() { //Ajouter le listener d'évenement de souris
-			private boolean isSelected = false;
 			
 			
 			@Override
@@ -215,15 +248,13 @@ public class MainUI {
 					
 					@Override
 					public void run() {
-						if(!isSelected){
+						if(!selectedImages.contains(urlImage)){
 							label.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-							isSelected = true;
 							selectedImages.add(urlImage);
 							System.out.println("Clic sur l'image : on l'ajoute ");
 						}
 						else {
 							label.setBorder(BorderFactory.createEmptyBorder());
-							isSelected = false;
 							selectedImages.remove(urlImage);
 							System.out.println("Clic sur l'image : on l'enlève");
 						}
