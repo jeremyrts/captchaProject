@@ -86,19 +86,37 @@ public class MainUI {
 		
 		if((panneaux.getClass().getPackage().getName() == themeObject.getClass().getPackage().getName())) {
 			for(int i=0; i<numberGoodImages; i++) {
-				imagesToDisplay.add(panneaux.getRandomPhotoURL());
+				URL tempURL = panneaux.getRandomPhotoURL();
+				while (imagesToDisplay.contains(tempURL)) {
+					tempURL = panneaux.getRandomPhotoURL();
+				}
+				imagesToDisplay.add(tempURL);
+				
+				
 			}
 			for(int i=0; i<numberOfImages-numberGoodImages; i++) {
-				imagesToDisplay.add(voitures.getRandomPhotoURL());
+				URL tempURL = voitures.getRandomPhotoURL();
+				while (imagesToDisplay.contains(tempURL)) {
+					tempURL = voitures.getRandomPhotoURL();
+				}
+				imagesToDisplay.add(tempURL);
 			}
 			
 		}
 		else {
 			for(int i=0; i<numberGoodImages; i++) {
-				imagesToDisplay.add(voitures.getRandomPhotoURL());
+				URL tempURL = voitures.getRandomPhotoURL();
+				while (imagesToDisplay.contains(tempURL)) {
+					tempURL = voitures.getRandomPhotoURL();
+				}
+				imagesToDisplay.add(tempURL);
 			}
 			for(int i=0; i<numberOfImages-numberGoodImages; i++) {
-				imagesToDisplay.add(panneaux.getRandomPhotoURL());
+				URL tempURL = panneaux.getRandomPhotoURL();
+				while (imagesToDisplay.contains(tempURL)) {
+					tempURL = panneaux.getRandomPhotoURL();
+				}
+				imagesToDisplay.add(tempURL);
 			}
 		}
 		
