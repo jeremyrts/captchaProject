@@ -32,12 +32,26 @@ import fr.upem.captcha.ui.MainUI;
 
 public class Main {
 	
-	private static String theme = "Voiture";
+	//private static String theme = "fr.upem.captcha.images.voitures.Voiture";
 	
 	public static void main(String[] args) throws IOException{
 		// Affichage de l'UI
 		MainUI ui = new MainUI();
-		ui.run(theme);
+		final String theme = getTheme();
+		System.out.println(theme);
+		try {
+			ui.run(theme);
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		// Vérification : est ce que le captcha est bon ? 
 			// OUI
@@ -62,10 +76,10 @@ public class Main {
 		
 		switch(value) {
 		case 0: 
-			theme = "Voiture";
+			theme = "fr.upem.captcha.images.voitures.Voiture";
 			break;
 		case 1:
-			theme = "Panneau";
+			theme = "fr.upem.captcha.images.panneaux.Panneau";
 			break;
 		default:
 			break;
