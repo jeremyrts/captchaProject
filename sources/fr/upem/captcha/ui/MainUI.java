@@ -19,6 +19,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,7 +34,7 @@ import fr.upem.captcha.images.voitures.Voiture;
 public class MainUI {
 	
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
-	private static int numberOfImages = 4;
+	private static int numberOfImages = 3;
 	private static int numberGoodImages;
 	private Object themeObject;
 	
@@ -193,17 +194,11 @@ public class MainUI {
 							if(!checkImage(theme)) {
 								System.out.println("FAUX");
 								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("FAUX !");
-								System.out.println("Nombre d'images sélectionnée : "+selectedImages.size());
-								selectedImages.clear();
-								System.out.println("Nombre d'images sélectionnée : "+selectedImages.size());
 							}
 							else {
 								System.out.println("VALIDE");
-								System.out.println(selectedImages);
 								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("VRAI !");
-								System.out.println("Nombre d'images sélectionnée : "+selectedImages.size());
-								selectedImages.clear();
-								System.out.println("Nombre d'images sélectionnée : "+selectedImages.size());
+				
 							}
 						} catch (InstantiationException e) {
 							e.printStackTrace();
@@ -230,7 +225,7 @@ public class MainUI {
 	private static JLabel createLabelImage(URL urlImage, JFrame frame) throws IOException{
 		
 		//final URL url = Main.class.getResource(imageLocation); //Aller chercher les images !! IMPORTANT 
-		
+		int layoutElement = frame.getContentPane().getComponentCount(); // Nombre d'élément contenu dans le layout
 		System.out.println(urlImage); 
 		
 		BufferedImage img = ImageIO.read(urlImage); //lire l'image
@@ -276,8 +271,9 @@ public class MainUI {
 							selectedImages.remove(urlImage);
 							System.out.println("Clic sur l'image : on l'enlève");
 						}
-						
+						((JTextArea) frame.getContentPane().getComponent(numberOfImages + 1)).setText("Resultat : ");
 					}
+					
 				});				
 			}
 		});
