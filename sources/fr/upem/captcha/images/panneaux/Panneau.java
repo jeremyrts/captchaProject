@@ -12,18 +12,20 @@ import fr.upem.captcha.images.Images;
 
 public class Panneau implements Images {
 	
-	private List<URL> imagesURL;
-	private int numberURL; 
+	 protected List<URL> imagesURL;
+	 protected int numberURL; 
 	
 	public Panneau(){
 		imagesURL = new ArrayList<>();
 		numberURL = 0;
 		// A l'initialisation, on ajoute toutes les URL d'images du package et on incrémente le nombre
-		imagesURL.add(Panneau.class.getResource("panneau 70.jpg"));
+		imagesURL.add(Panneau.class.getResource("panneau1.jpg"));
 		numberURL++;
 		imagesURL.add(Panneau.class.getResource("panneau2.jpg"));
 		numberURL++;
 		imagesURL.add(Panneau.class.getResource("panneau3.jpg"));
+		numberURL++;
+		imagesURL.add(Panneau.class.getResource("panneau4.jpg"));
 		numberURL++;
 	}
 
@@ -34,7 +36,7 @@ public class Panneau implements Images {
 
 	@Override
 	public List<URL> getRandomPhotosURL() {
-		List<URL> randomLink = new ArrayList();
+		List<URL> randomLink = new ArrayList<URL>();
 		Random rand = new Random();
 		int number = 0;
 		
