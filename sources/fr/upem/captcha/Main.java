@@ -32,35 +32,53 @@ import fr.upem.captcha.ui.MainUI;
 
 public class Main {
 	
-	//private static String theme = "fr.upem.captcha.images.voitures.Voiture";
+	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
+	private static int numberOfImages = 3;
+	private static int numberGoodImages;
+	private Object themeObject;
 	
 	public static void main(String[] args) throws IOException{
 		// Affichage de l'UI
 		MainUI ui = new MainUI();
-		final String theme = getTheme();
-		System.out.println(theme);
+		JFrame frame = new JFrame ("Captcha");
+		
+		// Premier niveau par défaut
+		final String theme = getTheme(1, "none");
+		int res = 2;
 		try {
-			ui.run(theme);
+			ui.run(theme, frame);
+			
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		
 		// Vérification : est ce que le captcha est bon ? 
-			// OUI
-			// Message de validation, fin du programme
 		
-			/* NON 
-				On update la fenêtre avec de nouvelles images 
-			*/
+		while (res == 2){
+			res = ui.checkResult((JTextArea)frame.getContentPane().getComponent(frame.getContentPane().getComponentCount() - 2));
+		}
 		
+		// NON 
+		// On update la fenêtre avec de nouvelles images 
+
+		if(res == 0) {
+			System.out.println("C'est faux, il faut passer à la difficulté supérieure");
+			System.out.println(getTheme(2, theme));
+		}
+		
+		// OUI
+		// Message de validation, fin du programme
+		
+		else if(res == 1){
+			System.out.println("C'est vrai, tu peux accéder au contenu");
+			
+		}
+		
+			
 		// Redefinition du thème 
 		// theme = getTheme()
 		
@@ -69,21 +87,36 @@ public class Main {
 		
 	}
 	
-	private static String getTheme() {
+	private static String getTheme(int level, String currentTheme) {
 		Random rand = new Random();
 		int value = rand.nextInt(2);
 		String theme = new String();
 		
-		switch(value) {
-		case 0: 
-			theme = "fr.upem.captcha.images.voitures.Voiture";
-			break;
-		case 1:
-			theme = "fr.upem.captcha.images.panneaux.Panneau";
-			break;
-		default:
-			break;
+		if(currentTheme.equals("none")) {
+			switch(value) {
+			case 0: 
+				theme = "fr.upem.captcha.images.animaux.Animal";
+				break;
+			case 1:
+				theme = "fr.upem.captcha.images.panneaux.Panneau";
+				break;
+			default:
+				theme = "fr.upem.captcha.images.panneaux.Panneau";
+			}
+		}
+		
+		if(level == 2) {
+			switch(currentTheme) {
+			case "fr.upem.captcha.images.animaux.Animal":
+				theme = "fr.upem.captcha.images.animaux.chien";
+				break;
+			
+			case "fr.upem.captcha.images.panneaux.Panneau":
+				theme = "fr.upem.captcha.images.panneaux.rouge";
+				break;
+			}
 		}
 		return theme;
+		
 	}
 }
