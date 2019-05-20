@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -29,17 +30,24 @@ import javax.swing.JTextArea;
 
 import fr.upem.captcha.images.Images;
 import fr.upem.captcha.images.animaux.Animal;
+import fr.upem.captcha.images.animaux.chien.Chien;
+import fr.upem.captcha.images.animaux.chien.shiba.Shiba;
+import fr.upem.captcha.images.animaux.chien.shiba.akita.Akita;
 import fr.upem.captcha.images.panneaux.Panneau;
+import fr.upem.captcha.images.panneaux.rouge.PanneauRouge;
+import fr.upem.captcha.images.panneaux.rouge.rond.PanneauRond;
+import fr.upem.captcha.images.panneaux.rouge.rond.sensInterdit.SensInterdit;
 import fr.upem.captcha.images.voitures.Voiture;
 
 public class MainUI {
 	
+	private static String themeLitteral;
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 	private static int numberOfImages = 4;
-	private static int numberGoodImages;
-	private Object themeObject;
+	private static Images themeObject;
+	private static Images themeGlobal;
 	
-	public void run(String theme, JFrame frame) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public void run(int level, String theme, JFrame frame, int numberGoodImages) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 				
 		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
 		
@@ -49,73 +57,68 @@ public class MainUI {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Lorsque l'on ferme la fenêtre on quitte le programme.
 		
-		JButton okButton = createOkButton(frame, theme);
+		JButton okButton = createOkButton(frame, theme, numberGoodImages);
 		
 		// Classe de toutes les images (peu importe le thème)
 		
-		Panneau panneaux = new Panneau();
-		Animal animaux = new Animal();
-		Voiture voitures = new Voiture();
+		System.out.println(numberGoodImages);
 		
-		// Classe particulière concernant le thème
-		Object themeObject = Class.forName(theme).newInstance();
-		
-		
+		switch(level) {
+			case 1: 
+				if(theme.equals(Chien.class.getName())) {
+					themeObject = new Chien();
+					themeGlobal = new Animal();
+					themeLitteral = "Chien";
+				}
+				else {
+					System.out.println(theme);
+					themeGlobal = new Panneau();
+					themeObject = new PanneauRouge();
+					themeLitteral = "Panneau rouge";
+				}
+				break;
+			case 2: 
+				if(theme.equals(Shiba.class.getName())) {
+					themeObject = new Shiba();
+					themeGlobal = new Chien();
+					themeLitteral = "Shiba";
+				}
+				else {
+					System.out.println(theme);
+					themeGlobal = new PanneauRouge();
+					themeObject = new PanneauRond();
+					themeLitteral = "Panneau rond";
+				}
+				break;
+			case 3: 
+				if(theme.equals(Akita.class.getName())) {
+					themeObject = new Akita();
+					themeGlobal = new Shiba();
+					themeLitteral = "Akita";
+				}
+				else {
+					themeGlobal = new PanneauRond();
+					themeObject = new SensInterdit();
+					themeLitteral = "Sens Interdit";
+				}
+				break;
 				
-		System.out.println("Layout principal crée");
-		
-		/* Etape 1 : récupérer aléatoirement les images nécessaires */
-		
-		List<URL> imagesToDisplay = new ArrayList();
-		String themeLitteral;
-		 
-		// Variable pour définir le nombre d'image correcte, à utiliser pour la vérification (1 et 4)
-		// Pour l'instant on choisit deux images du thème
-		
-		numberGoodImages = 2;
+			default:
+				break;
+		}
+				
+		System.out.println("Layout principal crée");	
+		ArrayList<URL> imagesToDisplay = new ArrayList();
 		
 		System.out.println("Le thème est : "+themeObject.getClass().getPackage().getName());
 		
+		System.out.println(imagesToDisplay);
+		imagesToDisplay = getImagesToDisplay(themeGlobal, themeObject, imagesToDisplay, numberGoodImages);
 		
-		if((panneaux.getClass().getPackage().getName() == themeObject.getClass().getPackage().getName())) {
-			themeLitteral = "Panneau";
-			for(int i=0; i<numberGoodImages; i++) {
-				URL tempURL = panneaux.getRandomPhotoURL();
-				while (imagesToDisplay.contains(tempURL)) {
-					tempURL = panneaux.getRandomPhotoURL();
-				}
-				imagesToDisplay.add(tempURL);
-			}
-			for(int i=0; i<numberOfImages-numberGoodImages; i++) {
-				
-				URL tempURL = animaux.getRandomPhotoURL();
-				while (imagesToDisplay.contains(tempURL)) {
-					tempURL = animaux.getRandomPhotoURL();
-				}
-				imagesToDisplay.add(tempURL);
-
-			}
-			
-		}
-		else {
-			themeLitteral = "Animal";
-			for(int i=0; i<numberGoodImages; i++) {
-				
-				URL tempURL = animaux.getRandomPhotoURL();
-				while (imagesToDisplay.contains(tempURL)) {
-					tempURL = animaux.getRandomPhotoURL();
-				}
-				imagesToDisplay.add(tempURL);
-			}
-			for(int i=0; i<numberOfImages-numberGoodImages; i++) {
-				URL tempURL = panneaux.getRandomPhotoURL();
-				while (imagesToDisplay.contains(tempURL)) {
-					tempURL = panneaux.getRandomPhotoURL();
-				}
-				imagesToDisplay.add(tempURL);
-			}
-		}
 		
+		// Mélange de la liste d'images à afficher
+		
+		Collections.shuffle(imagesToDisplay);
 		
 		// Boucle pour ajouter les images au viewer
 		
@@ -131,7 +134,7 @@ public class MainUI {
 	}
 	
 	public int checkResult(JTextArea textResult) {
-		if(textResult.getText().equals("Résultat : FAUX !")) {
+			if(textResult.getText().equals("Résultat : FAUX !")) {
 			return 0;
 		}
 		else if(textResult.getText().equals("Résultat : VRAI !")) {
@@ -142,22 +145,50 @@ public class MainUI {
 		}
 	}
 	
-	
-	public void update() {
-		
+	public void addImages(ArrayList<URL> imagesToDisplay, JFrame frame) throws IOException {
+		for (URL url : imagesToDisplay) {
+			frame.add(createLabelImage(url, frame));
+		}
 	}
 	
-	/* Défini le thème du captcha */
 	
+	private static ArrayList<URL> getImagesToDisplay(Images themeGlobal, Images themeObject, ArrayList<URL> imagesToDisplay, int numberGoodImages){
+		//URL tempURL = themeObject.getRandomPhotoURL();
+		System.out.println(themeObject.getClass().getName());
+		for(int i=0; i<numberGoodImages; i++) {
+			URL tempURL = themeObject.getRandomPhotoURL();
+			System.out.println(imagesToDisplay.contains(tempURL));
+			while (imagesToDisplay.contains(tempURL) || tempURL == null) {
+				tempURL = themeObject.getRandomPhotoURL();
+			}
+			System.out.println("On ajoute");
+			imagesToDisplay.add(tempURL);
+			System.out.println("Ajouté !");
+		}
+		
+		for(int i=0; i<numberOfImages-numberGoodImages; i++) {
+			System.out.println("Deuxième for");
+			URL tempURL = themeGlobal.getRandomPhotoURL();
+			while (imagesToDisplay.contains(tempURL) || tempURL == null) {
+				System.out.println("Le while numéro :"+i+" du thème "+themeGlobal);
+				tempURL = themeGlobal.getRandomPhotoURL();
+			}
+			imagesToDisplay.add(tempURL);
+			System.out.println("fin de for");
+		}
+		
+		System.out.println("Fin de fonction");
+		
+		return imagesToDisplay;
+	}
 	
-	
-	
-	private static boolean checkImage(String theme) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-		Object classTheme = Class.forName(theme).newInstance();
+	private static boolean checkImage(String theme, int numberGoodImages) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		Images classTheme = (Images) Class.forName(theme).newInstance();
 		boolean verif = true;
 		
 		/* On vérifie que le nombre d'image selectionné est bon */
 		if(selectedImages.size() != numberGoodImages) {
+			System.out.println("Nombre d'image faux");
 			return false;
 		}
 		else {
@@ -178,7 +209,7 @@ public class MainUI {
 		return new GridLayout(4,3);
 	}
 	
-	private static JButton createOkButton(JFrame frame, String theme){
+	private static JButton createOkButton(JFrame frame, String theme, int numberGoodImages){
 		return new JButton(new AbstractAction("Vérifier") { //ajouter l'action du bouton
 			
 			@Override
@@ -191,7 +222,7 @@ public class MainUI {
 					public void run() { // c'est un runnable
 						System.out.println("J'ai cliqué sur Ok");
 						try {
-							if(!checkImage(theme)) {
+							if(!checkImage(theme, numberGoodImages)) {
 								System.out.println("FAUX");
 								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("FAUX !");
 							}
@@ -208,11 +239,6 @@ public class MainUI {
 						}
 						
 						// Récupérer les index des images selectionnées et les déselectionner
-						
-						for (int i = 0; i<layoutElement - 3; i++) {
-							((JLabel)frame.getContentPane().getComponent(i)).setBorder(null);
-							
-						}	
 						selectedImages.clear();
 					}
 					
@@ -270,7 +296,7 @@ public class MainUI {
 							selectedImages.remove(urlImage);
 							System.out.println("Clic sur l'image : on l'enlève");
 						}
-						((JTextArea) frame.getContentPane().getComponent(numberOfImages + 1)).setText("Résultat : ");
+						//((JTextArea) frame.getContentPane().getComponent(numberOfImages + 1)).setText("Résultat : ");
 					}
 					
 				});				
@@ -278,5 +304,7 @@ public class MainUI {
 		});
 		return label;
 	}
+	
+
 }
 
