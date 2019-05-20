@@ -18,6 +18,10 @@ public class Chien extends Animal {
 		numberURL++;
 		imagesURL.add(Chien.class.getResource("chien4.jpg"));
 		numberURL++;
+		imagesURL.add(Chien.class.getResource("chien5.jpg"));
+		numberURL++;
+		imagesURL.add(Chien.class.getResource("chien6.jpg"));
+		numberURL++;
 	}
 
 }

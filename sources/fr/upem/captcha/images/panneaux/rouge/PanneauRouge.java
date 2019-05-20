@@ -18,6 +18,10 @@ public class PanneauRouge extends Panneau {
 		numberURL++;
 		imagesURL.add(PanneauRouge.class.getResource("panneauRouge4.jpg"));
 		numberURL++;
+		imagesURL.add(PanneauRouge.class.getResource("panneauRouge5.jpg"));
+		numberURL++;
+		imagesURL.add(PanneauRouge.class.getResource("panneauRouge6.jpg"));
+		numberURL++;
 	}
 
 }
