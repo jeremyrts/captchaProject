@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class ImagesSet implements Images {
+public abstract class ImagesSet implements Images {
 	
 	protected List<URL> imagesURL; 
 	protected int numberURL;
