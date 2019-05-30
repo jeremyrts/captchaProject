@@ -60,9 +60,6 @@ public class MainUI {
 		JButton okButton = createOkButton(frame, theme, numberGoodImages);
 		
 		// Classe de toutes les images (peu importe le thème)
-		
-		System.out.println(numberGoodImages);
-		
 		switch(level) {
 			case 1: 
 				if(theme.equals(Chien.class.getName())) {
@@ -109,10 +106,7 @@ public class MainUI {
 				
 		System.out.println("Layout principal crée");	
 		ArrayList<URL> imagesToDisplay = new ArrayList();
-		
 		System.out.println("Le thème est : "+themeObject.getClass().getPackage().getName());
-		
-		System.out.println(imagesToDisplay);
 		imagesToDisplay = getImagesToDisplay(themeGlobal, themeObject, imagesToDisplay, numberGoodImages);
 		
 		
@@ -153,32 +147,21 @@ public class MainUI {
 	
 	
 	private static ArrayList<URL> getImagesToDisplay(Images themeGlobal, Images themeObject, ArrayList<URL> imagesToDisplay, int numberGoodImages){
-		//URL tempURL = themeObject.getRandomPhotoURL();
-		System.out.println(themeObject.getClass().getName());
 		for(int i=0; i<numberGoodImages; i++) {
 			URL tempURL = themeObject.getRandomPhotoURL();
-			System.out.println(imagesToDisplay.contains(tempURL));
 			while (imagesToDisplay.contains(tempURL) || tempURL == null) {
 				tempURL = themeObject.getRandomPhotoURL();
 			}
-			System.out.println("On ajoute");
 			imagesToDisplay.add(tempURL);
-			System.out.println("Ajouté !");
 		}
 		
 		for(int i=0; i<numberOfImages-numberGoodImages; i++) {
-			System.out.println("Deuxième for");
 			URL tempURL = themeGlobal.getRandomPhotoURL();
 			while (imagesToDisplay.contains(tempURL) || tempURL == null) {
-				System.out.println("Le while numéro :"+i+" du thème "+themeGlobal);
 				tempURL = themeGlobal.getRandomPhotoURL();
 			}
 			imagesToDisplay.add(tempURL);
-			System.out.println("fin de for");
 		}
-		
-		System.out.println("Fin de fonction");
-		
 		return imagesToDisplay;
 	}
 	
@@ -188,7 +171,6 @@ public class MainUI {
 		
 		/* On vérifie que le nombre d'image selectionné est bon */
 		if(selectedImages.size() != numberGoodImages) {
-			System.out.println("Nombre d'image faux");
 			return false;
 		}
 		else {
@@ -289,14 +271,11 @@ public class MainUI {
 						if(!selectedImages.contains(urlImage)){
 							label.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 							selectedImages.add(urlImage);
-							System.out.println("Clic sur l'image : on l'ajoute ");
 						}
 						else {
 							label.setBorder(BorderFactory.createEmptyBorder());
 							selectedImages.remove(urlImage);
-							System.out.println("Clic sur l'image : on l'enlève");
 						}
-						//((JTextArea) frame.getContentPane().getComponent(numberOfImages + 1)).setText("Résultat : ");
 					}
 					
 				});				

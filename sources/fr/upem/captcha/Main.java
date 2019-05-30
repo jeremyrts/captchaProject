@@ -20,84 +20,41 @@ import fr.upem.captcha.ui.MainUI;
 public class Main {
 	
 	private static int numberGoodImages;
-	private static String theme;
+	private static String theme = "none";
 	private static int level = 1;
+	private static boolean isEnded = false;
+	private static MainUI ui;
+	private static JFrame frame;
 	
 	public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException{
 		// Affichage de l'UI
 		int res = 2;
-		MainUI ui = new MainUI();
-		JFrame frame = new JFrame ("Captcha");
+		ui = new MainUI();
+		frame = new JFrame ("Captcha");
 		
-		// Premier niveau par défaut
-		System.out.println("Niveau : "+level);
-		theme = getTheme(level, "none");
-		numberGoodImages = getNumberOfGoodImage();
-		String currentTheme = theme;
-		try {
-			ui.run(level, theme, frame, numberGoodImages);
-			
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-
-		while (res == 2){
-			//System.out.println(frame.getContentPane().getComponent(frame.getContentPane().getComponentCount() - 2));
-			res = ui.checkResult((JTextArea)frame.getContentPane().getComponent(frame.getContentPane().getComponentCount() - 2));
-		}
-		if(res == 0) {
-			System.out.println("C'est faux, il faut passer à la difficulté supérieure");
-			level++;
-			System.out.println("Niveau "+level);
-			
-			theme = getTheme(level, currentTheme);
-			currentTheme = theme;
-			System.out.println(theme);
-			frame.getContentPane().removeAll();
-			frame.repaint();
-			res = 2;
-			ui.run(level, theme, frame, getNumberOfGoodImage());
-			while (res == 2){
-				res = ui.checkResult((JTextArea)frame.getContentPane().getComponent(frame.getContentPane().getComponentCount() - 2));
+		while (!isEnded && level < 4) {
+			loadLevel();
+			while (res == 2) {
+				res = checkState();
 			}
-			if(res == 0) {
+			
+			switch(res) {
+			case 0:
 				System.out.println("C'est faux, il faut passer à la difficulté supérieure");
 				level++;
 				System.out.println("Niveau "+level);
-				theme = getTheme(level, currentTheme);
-				currentTheme = theme;
-				System.out.println(theme);
-				frame.getContentPane().removeAll();
-				frame.repaint();
 				res = 2;
-				ui.run(level, theme, frame, getNumberOfGoodImage());
-				while (res == 2){
-					res = ui.checkResult((JTextArea)frame.getContentPane().getComponent(frame.getContentPane().getComponentCount() - 2));
-				}
-				if(res == 0) {
-					frame.add(new JTextArea("Acces refusé"));
-				}
-				else if(res == 1){
-					System.out.println("C'est vrai, tu peux accéder au contenu");
-				}
-			}
-			else if(res == 1){
-				System.out.println("C'est vrai, tu peux accéder au contenu");
+				break;
 				
+			case 1:
+				System.out.println("C'est vrai, tu peux accéder au contenu");
+				isEnded = true;
+				
+			default: 
+				break;
 			}
 		}
-		
-		else if(res == 1){
-			System.out.println("C'est vrai, tu peux accéder au contenu");
-		}
-		
-		
-		
+				
 	}
 	
 	private static String getTheme(int level, String currentTheme) {
@@ -158,4 +115,17 @@ public class Main {
 		System.out.println("Number good image : "+value);
 		return value;
 	}
+	
+	private static int checkState () {
+			return ui.checkResult((JTextArea)frame.getContentPane().getComponent(frame.getContentPane().getComponentCount() - 2));
+	}
+	
+	private static void loadLevel() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
+		frame.getContentPane().removeAll();
+		frame.repaint();
+		theme = getTheme(level, theme);
+		numberGoodImages = getNumberOfGoodImage();
+		ui.run(level, theme, frame, numberGoodImages);
+	}
 }
+
