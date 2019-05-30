@@ -26,14 +26,13 @@ public abstract class ImagesSet implements Images {
 		StringBuilder stringbuilder = new StringBuilder();
 		stringbuilder.append(System.getProperty("user.dir"));
 		stringbuilder.append(System.getProperty("file.separator"));
-		stringbuilder.append("sources/");
 		stringbuilder.append(this.getClass().getPackage().getName().replace(".", System.getProperty("file.separator")));
 		return stringbuilder.toString();
 	}
 	
 	public List<String> getPhotosNames() {
-		
 		File folder = new File(this.getPhotosLocation());
+		System.out.println("Folder "+folder);
 		ArrayList<String> filesNames = new ArrayList<String>(Arrays.asList(folder.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
