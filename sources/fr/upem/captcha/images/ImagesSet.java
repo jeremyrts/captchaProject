@@ -26,7 +26,7 @@ public abstract class ImagesSet implements Images {
 		StringBuilder stringbuilder = new StringBuilder();
 		stringbuilder.append(System.getProperty("user.dir"));
 		stringbuilder.append(System.getProperty("file.separator"));
-		stringbuilder.append("classes/"); // Cette ligne ne fonctionne pas dans un jar mais est nécessaire pour executer dans Eclipse
+		//stringbuilder.append("classes/"); // Cette ligne ne fonctionne pas dans un jar mais est nécessaire pour executer dans Eclipse
 		stringbuilder.append(this.getClass().getPackage().getName().replace(".", System.getProperty("file.separator")));
 		return stringbuilder.toString();
 	}

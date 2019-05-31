@@ -1,7 +1,7 @@
 package fr.upem.captcha;
 
 
-public enum Themes {
+public enum Themes { 
 	Animal("Chien", "Shiba", "Akita"),
 	Panneau("PanneauRouge", "PanneauRond", "SensInterdit");
 	

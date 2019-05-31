@@ -1,6 +1,6 @@
 package fr.upem.captcha.ui;
 
-
+import fr.upem.captcha.images.Images;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -28,27 +28,20 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-import fr.upem.captcha.Themes;
-import fr.upem.captcha.images.Images;
-import fr.upem.captcha.images.animal.Animal;
-import fr.upem.captcha.images.animal.chien.Chien;
-import fr.upem.captcha.images.animal.chien.shiba.Shiba;
-import fr.upem.captcha.images.animal.chien.shiba.akita.Akita;
-import fr.upem.captcha.images.panneau.Panneau;
-import fr.upem.captcha.images.panneau.panneaurouge.PanneauRouge;
-import fr.upem.captcha.images.panneau.panneaurouge.panneaurond.PanneauRond;
-import fr.upem.captcha.images.panneau.panneaurouge.panneaurond.sensinterdit.SensInterdit;
-import fr.upem.captcha.images.voitures.Voiture;
+
+
 
 public class MainUI {
 	
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
-	private static int numberOfImages = 4;
+	private static int numberOfImages = 9;
 	private static Images themeObject;
 	private static Images themeGlobal;
 	
+	@SuppressWarnings("deprecation")
 	public void run( String currentThemeName, String currentThemeDir, String nextThemeName, String nextThemeDir, JFrame frame, int numberGoodImages) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 				
+		System.out.println("On est dans le run");
 		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
 		
 		frame.setLayout(layout);  // affection du layout dans la fenêtre.
@@ -57,6 +50,7 @@ public class MainUI {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Lorsque l'on ferme la fenêtre on quitte le programme.
 		JButton okButton = createOkButton(frame, nextThemeDir.concat("."+nextThemeName), numberGoodImages);
+	
 		themeGlobal = (Images) Class.forName(currentThemeDir.concat("."+currentThemeName)).newInstance(); //Le thème général des images
 		themeObject = (Images) Class.forName(nextThemeDir.concat("."+nextThemeName)).newInstance(); //Les images à rechercher
 		
@@ -70,7 +64,7 @@ public class MainUI {
 		for (URL url : imagesToDisplay) {
 			frame.add(createLabelImage(url, frame));
 		}
-		frame.add(new JTextArea("Cliquez sur le/les images correspondant à : "+nextThemeName));
+		frame.add(new JTextArea("Cliquez sur : "+nextThemeName));
 		frame.add(new JTextArea("Résultat : "));
 		frame.add(okButton);
 		frame.setVisible(true);	
@@ -94,15 +88,6 @@ public class MainUI {
 		}
 	}
 	
-	public void displayWinScreen(JFrame frame) {
-		frame.add(new JTextArea("Vous pouvez accéder au contenu"));
-		frame.setVisible(true);
-	}
-	
-	public void displayLoseScreen(JFrame frame) {
-		frame.add(new JTextArea("Accès refusé"));
-		frame.setVisible(true);
-	}
 	
 	private static ArrayList<URL> getImagesToDisplay(Images themeGlobal, Images themeObject, ArrayList<URL> imagesToDisplay, int numberGoodImages){
 		for(int i=0; i<numberGoodImages; i++) {

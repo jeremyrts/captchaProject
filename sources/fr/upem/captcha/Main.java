@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
+
 import fr.upem.captcha.ui.MainUI;
+//import fr.upem.captcha.Themes;
+
+
 
 public class Main {
 	
@@ -28,15 +32,12 @@ public class Main {
 		int res = 2;
 		ui = new MainUI();
 		frame = new JFrame ("Captcha");
-		currentThemeDir ="fr.upem.captcha.images"; // Pas de niveau donc nom de base
+		currentThemeDir ="fr.upem.captcha.images";
 		
 		while (!isEnded && level < 4) {
 			play(res,ui);
 		}
-		if(level >= 4) {
-			ui.displayLoseScreen(frame);
-		}
-	}
+	}	
 	
 	private static void play(int res, MainUI ui) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
 		loadLevel();
@@ -51,7 +52,6 @@ public class Main {
 			
 		case 1:
 			isEnded = true;
-			ui.displayWinScreen(frame);
 			
 		default: 
 			break;
@@ -75,6 +75,7 @@ public class Main {
 				break;
 			}
 			currentThemeName = themes.toString();
+			System.out.println(currentThemeName);
 			currentThemeDir = getFullThemePackageName(themes.toString());
 			nextThemeDir = getFullThemePackageName(themes.getLevel1());
 			nextThemeName = themes.getLevel1();
@@ -103,9 +104,9 @@ public class Main {
 	
 	private static int getNumberOfGoodImage() {
 		Random rand = new Random();
-		int value = rand.nextInt(2);
+		int value = rand.nextInt(4);
 		while(value==0) {
-			value = rand.nextInt(2);
+			value = rand.nextInt(4);
 		}
 		return value;
 	}
