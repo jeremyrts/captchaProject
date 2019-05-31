@@ -1,4 +1,4 @@
-package fr.upem.captcha.images.panneaux.rouge.rond.sensInterdit;
+package fr.upem.captcha.images.panneau.panneaurouge.panneaurond.sensinterdit;
 
 import fr.upem.captcha.images.ImagesSet;
 

@@ -1,4 +1,4 @@
-package fr.upem.captcha.images.panneaux.rouge.rond;
+package fr.upem.captcha.images.panneau.panneaurouge.panneaurond;
 
 import fr.upem.captcha.images.ImagesSet;
 

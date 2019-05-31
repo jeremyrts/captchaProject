@@ -1,4 +1,4 @@
-package fr.upem.captcha.images.panneaux;
+package fr.upem.captcha.images.panneau;
 
 import fr.upem.captcha.images.ImagesSet;
 

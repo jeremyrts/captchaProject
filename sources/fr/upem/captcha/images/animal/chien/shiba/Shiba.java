@@ -1,4 +1,4 @@
-package fr.upem.captcha.images.animaux.chien.shiba;
+package fr.upem.captcha.images.animal.chien.shiba;
 
 import fr.upem.captcha.images.ImagesSet;
 
