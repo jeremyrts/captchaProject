@@ -45,14 +45,11 @@ public class Main {
 		}
 		switch(res) {
 		case 0:
-			System.out.println("C'est faux, il faut passer à la difficulté supérieure");
 			level++;
-			System.out.println("Niveau "+level);
 			res = 2;
 			break;
 			
 		case 1:
-			System.out.println("C'est vrai, tu peux accéder au contenu");
 			isEnded = true;
 			ui.displayWinScreen(frame);
 			
@@ -64,9 +61,9 @@ public class Main {
 	private static void setTheme(int level) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		switch(level) {
 		case 1:
+			System.out.println("Niveau 1");
 			Random rand = new Random();
 			int value = rand.nextInt(2);
-			System.out.println("Niveau 1");
 			switch(value) {
 			case 0: 
 				themes = Themes.Animal;
@@ -78,24 +75,17 @@ public class Main {
 				break;
 			}
 			currentThemeName = themes.toString();
-			System.out.println("Le thème : "+currentThemeName);
 			currentThemeDir = getFullThemePackageName(themes.toString());
-			System.out.println("Le package du theme : "+currentThemeDir);
 			nextThemeDir = getFullThemePackageName(themes.getLevel1());
 			nextThemeName = themes.getLevel1();
-			System.out.println("Le subpackage du thème : "+nextThemeDir);
-			
 			break;
 	
 		case 2:
 			System.out.println("Niveau 2");
 			currentThemeName = nextThemeName;
-			System.out.println("Le thème : "+currentThemeName);
 			currentThemeDir = getFullThemePackageName(nextThemeName.toString());
-			System.out.println("Le package du theme : "+currentThemeDir);
 			nextThemeDir = getFullThemePackageName(themes.getLevel2());
 			nextThemeName = themes.getLevel2();
-			System.out.println("Le subpackage du thème : "+nextThemeDir);
 			break;
 			
 		case 3:
@@ -117,7 +107,6 @@ public class Main {
 		while(value==0) {
 			value = rand.nextInt(2);
 		}
-		System.out.println("Number good image : "+value);
 		return value;
 	}
 	

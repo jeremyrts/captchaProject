@@ -42,7 +42,6 @@ import fr.upem.captcha.images.voitures.Voiture;
 
 public class MainUI {
 	
-	private static String themeLitteral;
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 	private static int numberOfImages = 4;
 	private static Images themeObject;
@@ -58,22 +57,16 @@ public class MainUI {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Lorsque l'on ferme la fenêtre on quitte le programme.
 		JButton okButton = createOkButton(frame, nextThemeDir.concat("."+nextThemeName), numberGoodImages);
-		System.out.println(nextThemeName);
 		themeGlobal = (Images) Class.forName(currentThemeDir.concat("."+currentThemeName)).newInstance(); //Le thème général des images
 		themeObject = (Images) Class.forName(nextThemeDir.concat("."+nextThemeName)).newInstance(); //Les images à rechercher
 		
 		
 		
-		System.out.println("Le thème global est : "+themeGlobal);
 				
 		System.out.println("Layout principal crée");	
 		ArrayList<URL> imagesToDisplay = new ArrayList();
-		System.out.println("Le thème est : "+themeGlobal);
 		imagesToDisplay = getImagesToDisplay(themeGlobal, themeObject, imagesToDisplay, numberGoodImages);
-		
-		// Mélange de la liste d'images à afficher
 		Collections.shuffle(imagesToDisplay);
-		// Boucle pour ajouter les images au viewer
 		for (URL url : imagesToDisplay) {
 			frame.add(createLabelImage(url, frame));
 		}
@@ -133,8 +126,7 @@ public class MainUI {
 	private static boolean checkImage(String theme, int numberGoodImages) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		Images classTheme = (Images) Class.forName(theme).newInstance();
 		boolean verif = true;
-		/* On vérifie que le nombre d'image selectionné est bon */
-		if(selectedImages.size() != numberGoodImages) {
+		if(selectedImages.size() != numberGoodImages) { // On vérifie que le nombre d'image selectionné est bon
 			return false;
 		}
 		else {
@@ -144,7 +136,7 @@ public class MainUI {
 			}
 			while(verif && iter.hasNext()) {
 				if(!((Images) classTheme).isPhotoCorrect((URL)iter.next())) {
-					verif = false; // L'image n'est pas dans le package du thème
+					verif = false;
 				}
 			}
 			return verif;
@@ -168,14 +160,11 @@ public class MainUI {
 					
 					@Override
 					public void run() { // c'est un runnable
-						System.out.println("J'ai cliqué sur Ok");
 						try {
 							if(!checkImage(theme, numberGoodImages)) {
-								System.out.println("FAUX");
 								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("FAUX !");
 							}
 							else {
-								System.out.println("VALIDE");
 								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("VRAI !");
 							}
 						} catch (InstantiationException e) {
@@ -197,10 +186,7 @@ public class MainUI {
 	
 	private static JLabel createLabelImage(URL urlImage, JFrame frame) throws IOException{
 		
-		//final URL url = Main.class.getResource(imageLocation); //Aller chercher les images !! IMPORTANT 
 		int layoutElement = frame.getContentPane().getComponentCount(); // Nombre d'élément contenu dans le layout
-		System.out.println(urlImage); 
-		
 		BufferedImage img = ImageIO.read(urlImage); //lire l'image
 		Image sImage = img.getScaledInstance(1024/3,768/4, Image.SCALE_SMOOTH); //redimentionner l'image
 		
