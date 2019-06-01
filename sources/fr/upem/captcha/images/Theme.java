@@ -55,7 +55,11 @@ public abstract class Theme implements Images {
 	public static String getSubPackageClassName(File subPackage) throws FileNotFoundException {
 		
 		ArrayList<File> content = new ArrayList<File>(Arrays.asList(subPackage.listFiles()));
-		content.removeIf(file -> !file.getName().endsWith(".java"));
+		System.out.println(subPackage.getAbsolutePath());
+		if (subPackage.getAbsolutePath().contains("sources"))
+			content.removeIf(file -> !file.getName().endsWith(".java"));
+		else 
+			content.removeIf(file -> !file.getName().endsWith(".class"));
 		
 		if (content.isEmpty()) throw new FileNotFoundException("Can't find the corresponding java file for " + subPackage.getName());
 		String filePath = content.get(0).getPath();
