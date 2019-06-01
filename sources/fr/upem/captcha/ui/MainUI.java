@@ -29,23 +29,14 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
 import fr.upem.captcha.images.Images;
-import fr.upem.captcha.images.animaux.Animal;
-import fr.upem.captcha.images.animaux.chien.Chien;
-import fr.upem.captcha.images.animaux.chien.shiba.Shiba;
-import fr.upem.captcha.images.animaux.chien.shiba.akita.Akita;
-import fr.upem.captcha.images.panneaux.Panneau;
-import fr.upem.captcha.images.panneaux.rouge.PanneauRouge;
-import fr.upem.captcha.images.panneaux.rouge.rond.PanneauRond;
-import fr.upem.captcha.images.panneaux.rouge.rond.sensInterdit.SensInterdit;
-import fr.upem.captcha.images.voitures.Voiture;
+import fr.upem.captcha.images.Theme;
 
 public class MainUI {
 	
-	private static String themeLitteral;
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 	private static int numberOfImages = 4;
-	private static Images themeObject;
-	private static Images themeGlobal;
+	private static Theme themeObject;
+	private static Theme themeGlobal;
 	
 	public void run(int level, String theme, JFrame frame, int numberGoodImages) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 				
@@ -59,55 +50,14 @@ public class MainUI {
 		
 		JButton okButton = createOkButton(frame, theme, numberGoodImages);
 		
-		// Classe de toutes les images (peu importe le thème)
-		switch(level) {
-			case 1: 
-				if(theme.equals(Chien.class.getName())) {
-					themeObject = new Chien();
-					themeGlobal = new Animal();
-					themeLitteral = "Chien";
-				}
-				else {
-					System.out.println(theme);
-					themeGlobal = new Panneau();
-					themeObject = new PanneauRouge();
-					themeLitteral = "Panneau rouge";
-				}
-				break;
-			case 2: 
-				if(theme.equals(Shiba.class.getName())) {
-					themeObject = new Shiba();
-					themeGlobal = new Chien();
-					themeLitteral = "Shiba";
-				}
-				else {
-					System.out.println(theme);
-					themeGlobal = new PanneauRouge();
-					themeObject = new PanneauRond();
-					themeLitteral = "Panneau rond";
-				}
-				break;
-			case 3: 
-				if(theme.equals(Akita.class.getName())) {
-					themeObject = new Akita();
-					themeGlobal = new Shiba();
-					themeLitteral = "Akita";
-				}
-				else {
-					themeGlobal = new PanneauRond();
-					themeObject = new SensInterdit();
-					themeLitteral = "Sens Interdit";
-				}
-				break;
-				
-			default:
-				break;
-		}
-				
+		System.out.println("befffoooroe ftheme obj");
+		themeGlobal = (Theme)Class.forName(theme).newInstance();
+		System.out.println("after ftheme obj");
+		themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();
+		
 		System.out.println("Layout principal crée");	
-		ArrayList<URL> imagesToDisplay = new ArrayList();
-		System.out.println("Le thème est : "+themeObject.getClass().getPackage().getName());
-		imagesToDisplay = getImagesToDisplay(themeGlobal, themeObject, imagesToDisplay, numberGoodImages);
+		System.out.println("Le thème est : "+ themeObject.getClass().getPackage().getName());
+		ArrayList<URL> imagesToDisplay = getImagesToDisplay(themeGlobal, themeObject, numberGoodImages);
 		
 		
 		// Mélange de la liste d'images à afficher
@@ -120,7 +70,7 @@ public class MainUI {
 			frame.add(createLabelImage(url, frame));
 		}
 		
-		frame.add(new JTextArea("Cliquez sur les images du thème : "+themeLitteral));
+		frame.add(new JTextArea("Cliquez sur les images du thème : "+ themeObject.getClass().getSimpleName()));
 		frame.add(new JTextArea("Résultat : "));
 		frame.add(okButton);
 		frame.setVisible(true);	
@@ -146,7 +96,8 @@ public class MainUI {
 	}
 	
 	
-	private static ArrayList<URL> getImagesToDisplay(Images themeGlobal, Images themeObject, ArrayList<URL> imagesToDisplay, int numberGoodImages){
+	private static ArrayList<URL> getImagesToDisplay(Images themeGlobal, Images themeObject, int numberGoodImages){
+		ArrayList<URL> imagesToDisplay = new ArrayList<URL>();
 		for(int i=0; i<numberGoodImages; i++) {
 			URL tempURL = themeObject.getRandomPhotoURL();
 			while (imagesToDisplay.contains(tempURL) || tempURL == null) {

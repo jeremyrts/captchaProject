@@ -1,6 +1,6 @@
 package fr.upem.captcha.images.panneaux.rouge.rond.sensInterdit;
 
-import fr.upem.captcha.images.ImagesSet;
+import fr.upem.captcha.images.Theme;
 
-public class SensInterdit extends ImagesSet {
+public class SensInterdit extends Theme {
 }

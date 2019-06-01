@@ -1,6 +1,6 @@
 package fr.upem.captcha.images.animaux.chien.shiba;
 
-import fr.upem.captcha.images.ImagesSet;
+import fr.upem.captcha.images.Theme;
 
-public class Shiba extends ImagesSet {
+public class Shiba extends Theme {
 }

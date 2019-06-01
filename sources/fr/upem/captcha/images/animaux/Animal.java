@@ -1,13 +1,6 @@
 package fr.upem.captcha.images.animaux;
 
-import fr.upem.captcha.images.ImagesSet;
+import fr.upem.captcha.images.Theme;
 
-public class Animal extends ImagesSet {
-	
-	public Animal() {
-		super();
-	}
-
-
-
+public class Animal extends Theme {
 }

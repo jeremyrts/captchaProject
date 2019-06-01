@@ -7,14 +7,8 @@ import javax.swing.JFrame;
 
 import javax.swing.JTextArea;
 
-import fr.upem.captcha.images.animaux.chien.Chien;
-import fr.upem.captcha.images.animaux.chien.shiba.Shiba;
-import fr.upem.captcha.images.animaux.chien.shiba.akita.Akita;
-import fr.upem.captcha.images.panneaux.Panneau;
-import fr.upem.captcha.images.panneaux.rouge.PanneauRouge;
-import fr.upem.captcha.images.panneaux.rouge.rond.PanneauRond;
-import fr.upem.captcha.images.panneaux.rouge.rond.sensInterdit.SensInterdit;
-import fr.upem.captcha.images.voitures.Voiture;
+import fr.upem.captcha.images.Theme;
+
 import fr.upem.captcha.ui.MainUI;
 
 public class Main {
@@ -32,6 +26,7 @@ public class Main {
 		ui = new MainUI();
 		frame = new JFrame ("Captcha");
 		
+				
 		while (!isEnded && level < 4) {
 			loadLevel();
 			while (res == 2) {
@@ -57,54 +52,6 @@ public class Main {
 				
 	}
 	
-	private static String getTheme(int level, String currentTheme) {
-		Random rand = new Random();
-		int value = rand.nextInt(2);
-		String theme = new String();
-		switch(level) {
-		case 1:
-			System.out.println("Niveau 1");
-			switch(value) {
-			case 0: 
-				System.out.println("La value aléatoire chien : "+value);
-				theme = Chien.class.getName();
-				break;
-			case 1:
-				System.out.println("La value aléatoire panneauRouge : "+value);
-				theme = PanneauRouge.class.getName();
-				break;
-			default:
-				break;
-			}
-			break;
-	
-		case 2:
-			System.out.println("Niveau 2");
-			if(currentTheme.equals(Chien.class.getName())) {
-				theme = Shiba.class.getName();
-			}
-			else {
-				theme = PanneauRond.class.getName();
-			}
-			break;
-			
-		case 3:
-			System.out.println("Niveau 3");
-			if(currentTheme.equals(Shiba.class.getName())) {
-				theme = Akita.class.getName();
-			}
-			else {
-				theme = SensInterdit.class.getName();
-			}
-			break;
-		default:
-			break;
-			
-		}
-		return theme;
-		
-	}
-	
 	private static int getNumberOfGoodImage() {
 		Random rand = new Random();
 		int value = rand.nextInt(2);
@@ -117,15 +64,17 @@ public class Main {
 	}
 	
 	private static int checkState () {
+		System.out.println("checkstate");
 			return ui.checkResult((JTextArea)frame.getContentPane().getComponent(frame.getContentPane().getComponentCount() - 2));
 	}
 	
 	private static void loadLevel() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
 		frame.getContentPane().removeAll();
 		frame.repaint();
-		theme = getTheme(level, theme);
+		theme = Theme.init();
 		numberGoodImages = getNumberOfGoodImage();
 		ui.run(level, theme, frame, numberGoodImages);
+		System.out.println("after ui run");
 	}
 }
 
