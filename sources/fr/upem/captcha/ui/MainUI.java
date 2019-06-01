@@ -1,6 +1,6 @@
 package fr.upem.captcha.ui;
 
-
+import fr.upem.captcha.images.Images;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -31,15 +31,19 @@ import javax.swing.JTextArea;
 import fr.upem.captcha.images.Images;
 import fr.upem.captcha.images.Theme;
 
+
+
 public class MainUI {
 	
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
-	private static int numberOfImages = 4;
-	private static Theme themeObject;
-	private static Theme themeGlobal;
+	private static int numberOfImages = 9;
+	private static Images themeObject;
+	private static Images themeGlobal;
 	
-	public void run(int level, String theme, JFrame frame, int numberGoodImages) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	@SuppressWarnings("deprecation")
+	public void run( String currentThemeName, String currentThemeDir, String nextThemeName, String nextThemeDir, JFrame frame, int numberGoodImages) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 				
+		System.out.println("On est dans le run");
 		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
 		
 		frame.setLayout(layout);  // affection du layout dans la fenêtre.
@@ -47,8 +51,11 @@ public class MainUI {
 		frame.setResizable(false);  // On définit la fenêtre comme non redimensionnable
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Lorsque l'on ferme la fenêtre on quitte le programme.
+		JButton okButton = createOkButton(frame, nextThemeDir.concat("."+nextThemeName), numberGoodImages);
+	
+		themeGlobal = (Images) Class.forName(currentThemeDir.concat("."+currentThemeName)).newInstance(); //Le thème général des images
+		themeObject = (Images) Class.forName(nextThemeDir.concat("."+nextThemeName)).newInstance(); //Les images à rechercher
 		
-		JButton okButton = createOkButton(frame, theme, numberGoodImages);
 		
 		System.out.println("befffoooroe ftheme obj");
 		themeGlobal = (Theme)Class.forName(theme).newInstance();
@@ -63,9 +70,6 @@ public class MainUI {
 		// Mélange de la liste d'images à afficher
 		
 		Collections.shuffle(imagesToDisplay);
-		
-		// Boucle pour ajouter les images au viewer
-		
 		for (URL url : imagesToDisplay) {
 			frame.add(createLabelImage(url, frame));
 		}
@@ -74,7 +78,6 @@ public class MainUI {
 		frame.add(new JTextArea("Résultat : "));
 		frame.add(okButton);
 		frame.setVisible(true);	
-		
 	}
 	
 	public int checkResult(JTextArea textResult) {
@@ -119,9 +122,7 @@ public class MainUI {
 	private static boolean checkImage(String theme, int numberGoodImages) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		Images classTheme = (Images) Class.forName(theme).newInstance();
 		boolean verif = true;
-		
-		/* On vérifie que le nombre d'image selectionné est bon */
-		if(selectedImages.size() != numberGoodImages) {
+		if(selectedImages.size() != numberGoodImages) { // On vérifie que le nombre d'image selectionné est bon
 			return false;
 		}
 		else {
@@ -131,12 +132,14 @@ public class MainUI {
 			}
 			while(verif && iter.hasNext()) {
 				if(!((Images) classTheme).isPhotoCorrect((URL)iter.next())) {
-					verif = false; // L'image n'est pas dans le package du thème
+					verif = false;
 				}
 			}
 			return verif;
 		}
 	}
+	
+	
 	
 	private static GridLayout createLayout(){
 		return new GridLayout(4,3);
@@ -153,14 +156,11 @@ public class MainUI {
 					
 					@Override
 					public void run() { // c'est un runnable
-						System.out.println("J'ai cliqué sur Ok");
 						try {
 							if(!checkImage(theme, numberGoodImages)) {
-								System.out.println("FAUX");
 								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("FAUX !");
 							}
 							else {
-								System.out.println("VALIDE");
 								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("VRAI !");
 							}
 						} catch (InstantiationException e) {
@@ -182,10 +182,7 @@ public class MainUI {
 	
 	private static JLabel createLabelImage(URL urlImage, JFrame frame) throws IOException{
 		
-		//final URL url = Main.class.getResource(imageLocation); //Aller chercher les images !! IMPORTANT 
 		int layoutElement = frame.getContentPane().getComponentCount(); // Nombre d'élément contenu dans le layout
-		System.out.println(urlImage); 
-		
 		BufferedImage img = ImageIO.read(urlImage); //lire l'image
 		Image sImage = img.getScaledInstance(1024/3,768/4, Image.SCALE_SMOOTH); //redimentionner l'image
 		
