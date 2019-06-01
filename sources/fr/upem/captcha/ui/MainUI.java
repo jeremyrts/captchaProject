@@ -170,24 +170,32 @@ public class MainUI {
 	 * @return true if both condition (number correct and URLs matching) are filled up, false otherwise.
 	 */
 	
-	private static boolean checkImage(String theme, int numberGoodImages) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-		Theme classTheme = (Theme) Class.forName(theme).newInstance();
+	private static boolean checkImage(String theme, int numberGoodImages) {
+		
 		boolean verif = true;
-		if(selectedImages.size() != numberGoodImages) { // On vérifie que le nombre d'image selectionné est bon
-			return false;
-		}
-		else {
-			Iterator<URL> iter = selectedImages.iterator();
-			if(!iter.hasNext()) {
-				verif = false;
+		try {
+			Theme classTheme = (Theme) Class.forName(theme).newInstance();
+			
+			if(selectedImages.size() != numberGoodImages) { // On vérifie que le nombre d'image selectionné est bon
+				return false;
 			}
-			while(verif && iter.hasNext()) {
-				if(!((Images) classTheme).isPhotoCorrect((URL)iter.next())) {
+			else {
+				Iterator<URL> iter = selectedImages.iterator();
+				if(!iter.hasNext()) {
 					verif = false;
 				}
+				while(verif && iter.hasNext()) {
+					if(!((Images) classTheme).isPhotoCorrect((URL)iter.next())) {
+						verif = false;
+					}
+				}
+				return verif;
 			}
-			return verif;
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			e.printStackTrace();
 		}
+		return verif;
+		
 	}
 	
 	/**
@@ -205,7 +213,7 @@ public class MainUI {
 	 * 
 	 * @param frame	the current frame used, to give context information.
 	 * @param theme	the subtheme name to give another context information.
-	 * @param nuumberGoodImages	number of good images supposed to be selected.
+	 * @param numberGoodImages	number of good images supposed to be selected.
 	 * 
 	 * @return the button created
 	 */
@@ -221,19 +229,11 @@ public class MainUI {
 					
 					@Override
 					public void run() { // c'est un runnable
-						try {
-							if(!checkImage(theme, numberGoodImages)) {
-								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("FAUX !");
-							}
-							else {
-								((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("VRAI !");
-							}
-						} catch (InstantiationException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						} catch (ClassNotFoundException e) {
-							e.printStackTrace();
+						if(!checkImage(theme, numberGoodImages)) {
+							((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("FAUX !");
+						}
+						else {
+							((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("VRAI !");
 						}
 						
 						// Récupérer les index des images selectionnées et les déselectionner
@@ -252,7 +252,7 @@ public class MainUI {
 	 * @param urlImage	the image location to get the images.
 	 * @param frame	the current frame used, to give context information.
 	 * 
-	 * @throw IOException if the url is invalid.
+	 * @throws IOException if the url is invalid.
 	 * 
 	 * @return 	 the new label created to display on the application.
 	 */
