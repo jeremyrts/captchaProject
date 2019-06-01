@@ -10,5 +10,5 @@ import fr.upem.captcha.images.Theme;
  * @author Julian Bruxelle
  */
 
-public class PanneauRouge extends ImagesSet {
+public class PanneauRouge extends Theme {
 }

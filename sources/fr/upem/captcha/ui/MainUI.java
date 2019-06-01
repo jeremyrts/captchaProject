@@ -15,12 +15,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -61,11 +58,8 @@ public class MainUI {
 	 * @param frame	the current frame used in the application.
 	 * @param numberGoodImages	number of images from the subtheme to display, corresponding to the number of good answers.
 	 */
-	
-	public void run( String currentThemeName, String currentThemeDir, String nextThemeName, String nextThemeDir, JFrame frame, int numberGoodImages)   {
-	
-	@SuppressWarnings("deprecation")
-	public void run(Theme themeObject, Theme themeGlobal, JFrame frame, int numberGoodImages) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+
+	public void run(Theme themeObject, Theme themeGlobal, JFrame frame, int numberGoodImages) {
 				
 		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
 		
@@ -83,21 +77,6 @@ public class MainUI {
 		
 		// Mélange de la liste d'images à afficher
 		
-		JButton okButton = createOkButton(frame, nextThemeDir.concat("."+nextThemeName), numberGoodImages);
-	
-		try {
-			themeGlobal = (Images) Class.forName(currentThemeDir.concat("."+currentThemeName)).newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			e.printStackTrace();
-		} 
-		try {
-			themeObject = (Images) Class.forName(nextThemeDir.concat("."+nextThemeName)).newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}	
-		System.out.println("Layout principal crée");	
-		ArrayList<URL> imagesToDisplay = new ArrayList();
-		imagesToDisplay = getImagesToDisplay(themeGlobal, themeObject, imagesToDisplay, numberGoodImages);
 		Collections.shuffle(imagesToDisplay);
 		for (URL url : imagesToDisplay) {
 			try {

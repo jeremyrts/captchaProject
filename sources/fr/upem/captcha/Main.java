@@ -58,7 +58,6 @@ public class Main {
 		ui = new MainUI();
 		frame = new JFrame ("Captcha");
 		level = 1; // First launch
-		currentThemeDir ="fr.upem.captcha.images";
 		isEnded = false;
 		
 		loadLevel();
@@ -75,8 +74,6 @@ public class Main {
 	 */
 	
 	private static void play(int res) {
-		loadLevel();
-	private static void play(int res, MainUI ui) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
 		
 		System.out.println("etners play");
 		while (res == 2) {
@@ -84,8 +81,18 @@ public class Main {
 		}
 		switch(res) {
 		case 0:
-			themeGlobal = (Theme)Class.forName(themeObject.getClass().getName()).newInstance();
-			themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();
+			
+			try {
+				themeGlobal = (Theme)Class.forName(themeObject.getClass().getName()).newInstance();
+			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+				e.printStackTrace();
+			}
+			try {
+				themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();				
+			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+				e.printStackTrace();
+			}
+			
 			System.out.println("theme global" + themeGlobal.getClass().getSimpleName());
 			System.out.println("theme object" + themeObject.getClass().getSimpleName());
 			res = 2;
@@ -108,7 +115,6 @@ public class Main {
 		return value;
 	}
 	
-	
 	/**
 	 * Get information whether the captcha was completed or not.
 	 * 
@@ -118,20 +124,6 @@ public class Main {
 	
 	private static int checkState () {
 		return ui.checkResult((JTextArea)frame.getContentPane().getComponent(frame.getContentPane().getComponentCount() - 2));
-	}
-	
-	private static void loadLevel() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
-	/**
-	 * Dynamically construct the package where the class of the theme is located.
-	 * 
-	 * @param themeElement	single name of a class without its package context.
-	 * 
-	 * @return the full package name containing the global class used as theme.	
-	 * 
-	 */
-	
-	private static String getFullThemePackageName(String themeElement) {
-		return currentThemeDir.concat("."+themeElement.toLowerCase());
 	}
 	
 	/**
@@ -145,10 +137,19 @@ public class Main {
 		frame.repaint();
 		theme = Theme.init();
 		
-		themeGlobal = (Theme)Class.forName(theme).newInstance();
-		themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();
+		try {
+			themeGlobal = (Theme)Class.forName(theme).newInstance();
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+		}
+		try {
+			themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+		}
+		
 		System.out.println("theme global" + themeGlobal.getClass().getSimpleName());
-		numberGoodImages = getNumberOfGoodImage();
+		int numberGoodImages = getNumberOfGoodImage();
 		ui.run(themeObject, themeGlobal, frame, numberGoodImages);
 	}
 }

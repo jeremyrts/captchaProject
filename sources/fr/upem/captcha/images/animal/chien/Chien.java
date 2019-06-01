@@ -10,6 +10,6 @@ import fr.upem.captcha.images.Theme;
  * @author Julian Bruxelle
  */
 
-public class Chien extends ImagesSet {
+public class Chien extends Theme {
 
 }

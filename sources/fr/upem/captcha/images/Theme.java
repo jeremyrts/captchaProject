@@ -2,7 +2,6 @@ package fr.upem.captcha.images;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ArrayList;

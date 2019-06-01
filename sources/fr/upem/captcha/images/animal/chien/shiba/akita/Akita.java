@@ -10,5 +10,5 @@ import fr.upem.captcha.images.Theme;
  * @author Julian Bruxelle
  */
 
-public class Akita extends ImagesSet {
+public class Akita extends Theme {
 }

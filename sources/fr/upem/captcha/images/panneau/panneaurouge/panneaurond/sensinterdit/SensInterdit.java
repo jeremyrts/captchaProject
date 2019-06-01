@@ -10,5 +10,5 @@ import fr.upem.captcha.images.Theme;
  * @author Julian Bruxelle
  */
 
-public class SensInterdit extends ImagesSet {
+public class SensInterdit extends Theme {
 }

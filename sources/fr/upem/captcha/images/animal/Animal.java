@@ -10,5 +10,5 @@ import fr.upem.captcha.images.Theme;
  * @author Julian Bruxelle
  */
 
-public class Animal extends ImagesSet {
+public class Animal extends Theme {
 }
