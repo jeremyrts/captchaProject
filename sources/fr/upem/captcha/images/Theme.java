@@ -38,7 +38,6 @@ public abstract class Theme implements Images {
 			stringbuilder.append("sources");
 			stringbuilder.append("/");
 		}
-		System.out.println(className.toString());
 		stringbuilder.append(className.getPackage().getName().replace(".", "/"));
 		return stringbuilder.toString();
 	}
@@ -61,7 +60,6 @@ public abstract class Theme implements Images {
 		
 		if (content.isEmpty()) throw new FileNotFoundException("Can't find the corresponding java file for " + subPackage.getName());
 		String filePath = content.get(0).getPath();
-		System.out.println(filePath.substring(filePath.lastIndexOf("fr") - 1, filePath.lastIndexOf('.')).replace("/", "."));	
 		return filePath.substring(filePath.lastIndexOf("fr"), filePath.lastIndexOf('.')).replace("/", ".");	
 	}
 
@@ -104,6 +102,7 @@ public abstract class Theme implements Images {
 	
 	public static String getRandomSubTheme(Class classname) {
 		Random rand = new Random();
+		System.out.println("subpack for " + classname.getSimpleName() + " " + Theme.getSubPackages(classname).size());
 		int value = Math.abs(rand.nextInt()) % Theme.getSubPackages(classname).size();
 
 		try {

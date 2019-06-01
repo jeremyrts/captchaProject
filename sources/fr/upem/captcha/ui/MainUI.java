@@ -28,20 +28,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-import fr.upem.captcha.images.Images;
 import fr.upem.captcha.images.Theme;
-
-
 
 public class MainUI {
 	
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 	private static int numberOfImages = 9;
-	private static Images themeObject;
-	private static Images themeGlobal;
+	
 	
 	@SuppressWarnings("deprecation")
-	public void run( String currentThemeName, String currentThemeDir, String nextThemeName, String nextThemeDir, JFrame frame, int numberGoodImages) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public void run(Theme themeObject, Theme themeGlobal, JFrame frame, int numberGoodImages) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 				
 		System.out.println("On est dans le run");
 		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
@@ -51,16 +47,7 @@ public class MainUI {
 		frame.setResizable(false);  // On définit la fenêtre comme non redimensionnable
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Lorsque l'on ferme la fenêtre on quitte le programme.
-		JButton okButton = createOkButton(frame, nextThemeDir.concat("."+nextThemeName), numberGoodImages);
-	
-		themeGlobal = (Images) Class.forName(currentThemeDir.concat("."+currentThemeName)).newInstance(); //Le thème général des images
-		themeObject = (Images) Class.forName(nextThemeDir.concat("."+nextThemeName)).newInstance(); //Les images à rechercher
-		
-		
-		System.out.println("befffoooroe ftheme obj");
-		themeGlobal = (Theme)Class.forName(theme).newInstance();
-		System.out.println("after ftheme obj");
-		themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();
+		JButton okButton = createOkButton(frame, themeObject.getClass().getName(), numberGoodImages);
 		
 		System.out.println("Layout principal crée");	
 		System.out.println("Le thème est : "+ themeObject.getClass().getPackage().getName());
@@ -120,7 +107,7 @@ public class MainUI {
 	}
 	
 	private static boolean checkImage(String theme, int numberGoodImages) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-		Images classTheme = (Images) Class.forName(theme).newInstance();
+		Theme classTheme = (Theme) Class.forName(theme).newInstance();
 		boolean verif = true;
 		if(selectedImages.size() != numberGoodImages) { // On vérifie que le nombre d'image selectionné est bon
 			return false;
