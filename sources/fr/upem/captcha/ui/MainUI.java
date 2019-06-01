@@ -30,16 +30,43 @@ import javax.swing.JTextArea;
 
 import fr.upem.captcha.images.Theme;
 
+/**
+ * This is the class handling the UI and everything related to it. It has also multiple static field to keep a coherence
+ * between the methods.
+ * 
+ * @author Jeremy Ratsimandresy
+ * @author Julian Bruxelle
+ */
+
 public class MainUI {
 	
+	/**
+	 * Keeps tracks of the images selected by the user as potential answers.
+	 */
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
+	/**
+	 * Define the number of images to use in the application. The current layout is well made for 9 images, but less is possible, assuming the number of good
+	 * images is modified as well.
+	 */
 	private static int numberOfImages = 9;
 	
+	/**
+	 * Display a new frame related to the state of the captcha where in : level, themes, etc.
+	 * This is the main UI method as it's called everytime we start the application or we update its state.
+	 * 
+	 * @param currentThemeName	string representing the class type of the global theme (Animal or Panneau on level 1 for instance).
+	 * @param currentThemeDir	string representing the package of the class type of the global theme.
+	 * @param nextThemeName	string representing the class type of the subtheme, corresponding to the good answers (Shiba or PanneauRouge on level 1 for instance).
+	 * @param nextThemeDir	string representing the package of the class type of the subtheme.
+	 * @param frame	the current frame used in the application.
+	 * @param numberGoodImages	number of images from the subtheme to display, corresponding to the number of good answers.
+	 */
+	
+	public void run( String currentThemeName, String currentThemeDir, String nextThemeName, String nextThemeDir, JFrame frame, int numberGoodImages)   {
 	
 	@SuppressWarnings("deprecation")
 	public void run(Theme themeObject, Theme themeGlobal, JFrame frame, int numberGoodImages) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 				
-		System.out.println("On est dans le run");
 		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
 		
 		frame.setLayout(layout);  // affection du layout dans la fenêtre.
@@ -56,9 +83,28 @@ public class MainUI {
 		
 		// Mélange de la liste d'images à afficher
 		
+		JButton okButton = createOkButton(frame, nextThemeDir.concat("."+nextThemeName), numberGoodImages);
+	
+		try {
+			themeGlobal = (Images) Class.forName(currentThemeDir.concat("."+currentThemeName)).newInstance();
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			e.printStackTrace();
+		} 
+		try {
+			themeObject = (Images) Class.forName(nextThemeDir.concat("."+nextThemeName)).newInstance();
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}	
+		System.out.println("Layout principal crée");	
+		ArrayList<URL> imagesToDisplay = new ArrayList();
+		imagesToDisplay = getImagesToDisplay(themeGlobal, themeObject, imagesToDisplay, numberGoodImages);
 		Collections.shuffle(imagesToDisplay);
 		for (URL url : imagesToDisplay) {
-			frame.add(createLabelImage(url, frame));
+			try {
+				frame.add(createLabelImage(url, frame));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		frame.add(new JTextArea("Cliquez sur les images du thème : "+ themeObject.getClass().getSimpleName()));
@@ -66,6 +112,14 @@ public class MainUI {
 		frame.add(okButton);
 		frame.setVisible(true);	
 	}
+	
+	/**
+	 * Check the value of the panel with the result information and return an integer to give the answer.
+	 * 
+	 * @param textResult	the panel JTextArea where the result is displayed.
+	 * 
+	 * @return 0 if the result is false ("Résultat : FAUX !"), 1 if the result is correct ("Résultat : VRAI !"), 2 if no result yet ("Résultat : ")
+	 */
 	
 	public int checkResult(JTextArea textResult) {
 			if(textResult.getText().equals("Résultat : FAUX !")) {
@@ -79,12 +133,33 @@ public class MainUI {
 		}
 	}
 	
-	public void addImages(ArrayList<URL> imagesToDisplay, JFrame frame) throws IOException {
+	/**
+	 * Add images to the frame that we want to display.
+	 * 
+	 * @param imagesToDisplay	the ArrayList containing all the URL of the images we want to display.
+	 * @param frame the frame we want to display the images on.
+	 */
+	
+	public void addImages(ArrayList<URL> imagesToDisplay, JFrame frame) {
 		for (URL url : imagesToDisplay) {
-			frame.add(createLabelImage(url, frame));
+			try {
+				frame.add(createLabelImage(url, frame));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
+	/**
+	 * Get dynamically the URLs of the images we want to display for the application. It first collect images from the good answer class then from the  global theme.
+	 * 
+	 * @param themeGlobal	Images instance representing the global theme class. 
+	 * @param themeObject	Images instance representing the specific theme class.
+	 * @param imagesToDisplay	the ArrayList to fill up.
+	 * @param numberGoodImages	number of images from the subtheme to display, corresponding to the number of good answers.
+	 * 
+	 * @return the ArrayList filled up with the URLs of the images to display.
+	 */
 	
 	private static ArrayList<URL> getImagesToDisplay(Images themeGlobal, Images themeObject, int numberGoodImages){
 		ArrayList<URL> imagesToDisplay = new ArrayList<URL>();
@@ -106,6 +181,16 @@ public class MainUI {
 		return imagesToDisplay;
 	}
 	
+	/**
+	 * Verify if the images selected are the good answers. It verify if the number of images selected matches the number of good images displayed
+	 * and then compare whether the URL of each image belonged to the URLs of the class subtheme (good answers).
+	 * 
+	 * @param theme	full class name of the good answer theme (subtheme). 
+	 * @param numberGoodImages	number of good images that was supposed to be selected.
+	 * 
+	 * @return true if both condition (number correct and URLs matching) are filled up, false otherwise.
+	 */
+	
 	private static boolean checkImage(String theme, int numberGoodImages) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		Theme classTheme = (Theme) Class.forName(theme).newInstance();
 		boolean verif = true;
@@ -126,11 +211,25 @@ public class MainUI {
 		}
 	}
 	
-	
+	/**
+	 * Create the layout used to display the images. By default it's a 4x3 grid.
+	 * 
+	 * @return the GridLayout layout used to display the images.
+	 */
 	
 	private static GridLayout createLayout(){
 		return new GridLayout(4,3);
 	}
+	
+	/**
+	 * Create the button to validate our choice.
+	 * 
+	 * @param frame	the current frame used, to give context information.
+	 * @param theme	the subtheme name to give another context information.
+	 * @param nuumberGoodImages	number of good images supposed to be selected.
+	 * 
+	 * @return the button created
+	 */
 	
 	private static JButton createOkButton(JFrame frame, String theme, int numberGoodImages){
 		return new JButton(new AbstractAction("Vérifier") { //ajouter l'action du bouton
@@ -166,6 +265,18 @@ public class MainUI {
 			}
 		});
 	}
+	
+	/**
+	 * Create a new label for an image to be displayed on and give a listener to the mouse events, so that it can interact with it.
+	 * On click, the image will get black border if it's not already selected, and lose its black border if it's already selected.
+	 * 
+	 * @param urlImage	the image location to get the images.
+	 * @param frame	the current frame used, to give context information.
+	 * 
+	 * @throw IOException if the url is invalid.
+	 * 
+	 * @return 	 the new label created to display on the application.
+	 */
 	
 	private static JLabel createLabelImage(URL urlImage, JFrame frame) throws IOException{
 		
