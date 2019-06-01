@@ -29,16 +29,16 @@ public class Main {
 	private static boolean isEnded;
 	/**
 	 * One UI is affected to the application. It is linked to a frame.
+	 * 
 	 * @see JFrame
 	 */
 	private static MainUI ui;
 	/**
 	 * One frame is affected to the application. It is linked to the UI.
+	 * 
 	 * @see MainUI
 	 */
 	private static JFrame frame;
-	
-	
 	/**
 	 * This is the Enumeration that contains the themes vocabulary and wording.
 	 */
