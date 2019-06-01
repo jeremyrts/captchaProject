@@ -101,8 +101,13 @@ public abstract class Theme implements Images {
 	
 	public static String getRandomSubTheme(Class classname) {
 		Random rand = new Random();
-		System.out.println("subpack for " + classname.getSimpleName() + " " + Theme.getSubPackages(classname).size());
-		int value = Math.abs(rand.nextInt()) % Theme.getSubPackages(classname).size();
+		int value = 0;	
+		
+		try {
+			value = Math.abs(rand.nextInt()) % Theme.getSubPackages(classname).size();
+		} catch (ArithmeticException e) {
+			e.printStackTrace();
+		}
 
 		try {
 			return Theme.getSubPackageClassName(Theme.getSubPackages(classname).get(value));

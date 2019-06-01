@@ -101,7 +101,7 @@ public class MainUI {
 	 */
 	
 	public int checkResult(JTextArea textResult) {
-			if(textResult.getText().equals("Résultat : FAUX !")) {
+		if(textResult.getText().equals("Résultat : FAUX !")) {
 			return 0;
 		}
 		else if(textResult.getText().equals("Résultat : VRAI !")) {

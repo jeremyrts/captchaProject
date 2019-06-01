@@ -1,6 +1,5 @@
 package fr.upem.captcha;
 
-import java.io.IOException;
 import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -19,11 +18,7 @@ import fr.upem.captcha.ui.MainUI;
  */
 
 public class Main {
-	/**
-	 * This field allows the application to know at anytime in which level it is at any moment.
-	 * This way, we can monitor how the user is doing and moving onto the next level if needed.
-	 */
-	private static int level;
+
 	/**
 	 * This field is what make sure the captcha keeps going as long as there is still some contents to display
 	 */
@@ -57,15 +52,35 @@ public class Main {
 		int res = 2;
 		ui = new MainUI();
 		frame = new JFrame ("Captcha");
-		level = 1; // First launch
 		isEnded = false;
 		
-		loadLevel();
 		
-		while (!isEnded && level < 4) {
+		Main.init();
+		
+		while (!isEnded) {
 			play(res);
 		}
 	}	
+	
+	
+	/**
+	 * Handle the application initialization by picking a random theme. 
+	 */
+	
+	private static void init() {
+		theme = Theme.init();
+		
+		try {
+			themeGlobal = (Theme)Class.forName(theme).newInstance();
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+		}
+		try {
+			themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Handle the application progression by loading the levels as the user goes through difficulties. 
@@ -75,27 +90,33 @@ public class Main {
 	
 	private static void play(int res) {
 		
+		loadLevel();
+		
 		System.out.println("etners play");
+		System.out.println(res);
+		
 		while (res == 2) {
 			res = checkState();
 		}
 		switch(res) {
 		case 0:
-			
 			try {
 				themeGlobal = (Theme)Class.forName(themeObject.getClass().getName()).newInstance();
 			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
 				e.printStackTrace();
 			}
-			try {
-				themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();				
-			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-				e.printStackTrace();
-			}
 			
-			System.out.println("theme global" + themeGlobal.getClass().getSimpleName());
-			System.out.println("theme object" + themeObject.getClass().getSimpleName());
-			res = 2;
+			if (Theme.getSubPackages(themeGlobal.getClass()).size() == 0) {
+				isEnded = true;
+			}
+			else {
+				try {
+					themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();				
+				} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+					e.printStackTrace();
+				}
+				res = 2;
+			}
 			break;
 			
 		case 1:
@@ -135,20 +156,6 @@ public class Main {
 	private static void loadLevel(){
 		frame.getContentPane().removeAll();
 		frame.repaint();
-		theme = Theme.init();
-		
-		try {
-			themeGlobal = (Theme)Class.forName(theme).newInstance();
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-			e.printStackTrace();
-		}
-		try {
-			themeObject = (Theme)Class.forName(themeGlobal.getRandomSubTheme(themeGlobal.getClass())).newInstance();
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println("theme global" + themeGlobal.getClass().getSimpleName());
 		int numberGoodImages = getNumberOfGoodImage();
 		ui.run(themeObject, themeGlobal, frame, numberGoodImages);
 	}
