@@ -36,7 +36,7 @@ import fr.upem.captcha.images.Theme;
  */
 
 public class MainUI {
-	
+
 	/**
 	 * Keeps tracks of the images selected by the user as potential answers.
 	 */
@@ -46,7 +46,7 @@ public class MainUI {
 	 * images is modified as well.
 	 */
 	private static int numberOfImages = 9;
-	
+
 	/**
 	 * Display a new frame related to the state of the captcha where in : level, themes, etc.
 	 * This is the main UI method as it's called everytime we start the application or we update its state.
@@ -60,23 +60,23 @@ public class MainUI {
 	 */
 
 	public void run(Theme themeObject, Theme themeGlobal, JFrame frame, int numberGoodImages) {
-				
+
 		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
-		
+
 		frame.setLayout(layout);  // affection du layout dans la fenêtre.
 		frame.setSize(1024, 768); // définition de la taille
 		frame.setResizable(false);  // On définit la fenêtre comme non redimensionnable
-		
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Lorsque l'on ferme la fenêtre on quitte le programme.
 		JButton okButton = createOkButton(frame, themeObject.getClass().getName(), numberGoodImages);
-		
+
 		System.out.println("Layout principal crée");	
 		System.out.println("Le thème est : "+ themeObject.getClass().getPackage().getName());
 		ArrayList<URL> imagesToDisplay = getImagesToDisplay(themeGlobal, themeObject, numberGoodImages);
-		
-		
+
+
 		// Mélange de la liste d'images à afficher
-		
+
 		Collections.shuffle(imagesToDisplay);
 		for (URL url : imagesToDisplay) {
 			try {
@@ -85,13 +85,13 @@ public class MainUI {
 				e.printStackTrace();
 			}
 		}
-		
+
 		frame.add(new JTextArea("Cliquez sur les images du thème : "+ themeObject.getClass().getSimpleName()));
 		frame.add(new JTextArea("Résultat : "));
 		frame.add(okButton);
 		frame.setVisible(true);	
 	}
-	
+
 	/**
 	 * Check the value of the panel with the result information and return an integer to give the answer.
 	 * 
@@ -99,7 +99,7 @@ public class MainUI {
 	 * 
 	 * @return 0 if the result is false ("Résultat : FAUX !"), 1 if the result is correct ("Résultat : VRAI !"), 2 if no result yet ("Résultat : ")
 	 */
-	
+
 	public int checkResult(JTextArea textResult) {
 		if(textResult.getText().equals("Résultat : FAUX !")) {
 			return 0;
@@ -111,14 +111,14 @@ public class MainUI {
 			return 2;
 		}
 	}
-	
+
 	/**
 	 * Add images to the frame that we want to display.
 	 * 
 	 * @param imagesToDisplay	the ArrayList containing all the URL of the images we want to display.
 	 * @param frame the frame we want to display the images on.
 	 */
-	
+
 	public void addImages(ArrayList<URL> imagesToDisplay, JFrame frame) {
 		for (URL url : imagesToDisplay) {
 			try {
@@ -128,7 +128,7 @@ public class MainUI {
 			}
 		}
 	}
-	
+
 	/**
 	 * Get dynamically the URLs of the images we want to display for the application. It first collect images from the good answer class then from the  global theme.
 	 * 
@@ -139,7 +139,7 @@ public class MainUI {
 	 * 
 	 * @return the ArrayList filled up with the URLs of the images to display.
 	 */
-	
+
 	private static ArrayList<URL> getImagesToDisplay(Images themeGlobal, Images themeObject, int numberGoodImages){
 		ArrayList<URL> imagesToDisplay = new ArrayList<URL>();
 		for(int i=0; i<numberGoodImages; i++) {
@@ -149,7 +149,7 @@ public class MainUI {
 			}
 			imagesToDisplay.add(tempURL);
 		}
-		
+
 		for(int i=0; i<numberOfImages-numberGoodImages; i++) {
 			URL tempURL = themeGlobal.getRandomPhotoURL();
 			while (imagesToDisplay.contains(tempURL) || tempURL == null) {
@@ -159,7 +159,7 @@ public class MainUI {
 		}
 		return imagesToDisplay;
 	}
-	
+
 	/**
 	 * Verify if the images selected are the good answers. It verify if the number of images selected matches the number of good images displayed
 	 * and then compare whether the URL of each image belonged to the URLs of the class subtheme (good answers).
@@ -169,13 +169,13 @@ public class MainUI {
 	 * 
 	 * @return true if both condition (number correct and URLs matching) are filled up, false otherwise.
 	 */
-	
+
 	private static boolean checkImage(String theme, int numberGoodImages) {
-		
+
 		boolean verif = true;
 		try {
 			Theme classTheme = (Theme) Class.forName(theme).newInstance();
-			
+
 			if(selectedImages.size() != numberGoodImages) { // On vérifie que le nombre d'image selectionné est bon
 				return false;
 			}
@@ -195,19 +195,19 @@ public class MainUI {
 			e.printStackTrace();
 		}
 		return verif;
-		
+
 	}
-	
+
 	/**
 	 * Create the layout used to display the images. By default it's a 4x3 grid.
 	 * 
 	 * @return the GridLayout layout used to display the images.
 	 */
-	
+
 	private static GridLayout createLayout(){
 		return new GridLayout(4,3);
 	}
-	
+
 	/**
 	 * Create the button to validate our choice.
 	 * 
@@ -217,16 +217,16 @@ public class MainUI {
 	 * 
 	 * @return the button created
 	 */
-	
+
 	private static JButton createOkButton(JFrame frame, String theme, int numberGoodImages){
 		return new JButton(new AbstractAction("Vérifier") { //ajouter l'action du bouton
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				EventQueue.invokeLater(new Runnable() { // faire des choses dans l'interface donc appeler cela dans la queue des évènements
-					
+
 					int layoutElement = frame.getContentPane().getComponentCount(); // Nombre d'élément contenu dans le layout
-					
+
 					@Override
 					public void run() { // c'est un runnable
 						if(!checkImage(theme, numberGoodImages)) {
@@ -235,16 +235,16 @@ public class MainUI {
 						else {
 							((JTextArea) frame.getContentPane().getComponent(layoutElement - 2)).append("VRAI !");
 						}
-						
+
 						// Récupérer les index des images selectionnées et les déselectionner
 						selectedImages.clear();
 					}
-					
+
 				});
 			}
 		});
 	}
-	
+
 	/**
 	 * Create a new label for an image to be displayed on and give a listener to the mouse events, so that it can interact with it.
 	 * On click, the image will get black border if it's not already selected, and lose its black border if it's already selected.
@@ -256,41 +256,41 @@ public class MainUI {
 	 * 
 	 * @return 	 the new label created to display on the application.
 	 */
-	
+
 	private static JLabel createLabelImage(URL urlImage, JFrame frame) throws IOException{
-		
+
 		int layoutElement = frame.getContentPane().getComponentCount(); // Nombre d'élément contenu dans le layout
 		BufferedImage img = ImageIO.read(urlImage); //lire l'image
 		Image sImage = img.getScaledInstance(1024/3,768/4, Image.SCALE_SMOOTH); //redimentionner l'image
-		
+
 		final JLabel label = new JLabel(new ImageIcon(sImage)); // créer le composant pour ajouter l'image dans la fenêtre
-		
+
 		label.addMouseListener(new MouseListener() { //Ajouter le listener d'évenement de souris
-			
-			
+
+
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
 			}
-			
+
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-		
+
 			}
-			
+
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				
+
 			}
-			
+
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				
+
 			}
-			
+
 			@Override
 			public void mouseClicked(MouseEvent arg0) { //ce qui nous intéresse c'est lorsqu'on clique sur une image, il y a donc des choses à faire ici
 				EventQueue.invokeLater(new Runnable() { 
-					
+
 					@Override
 					public void run() {
 						if(!selectedImages.contains(urlImage)){
@@ -302,13 +302,13 @@ public class MainUI {
 							selectedImages.remove(urlImage);
 						}
 					}
-					
+
 				});				
 			}
 		});
 		return label;
 	}
-	
+
 
 }
 

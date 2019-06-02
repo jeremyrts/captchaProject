@@ -13,7 +13,7 @@ public abstract class Theme implements Images {
 
 	private List<URL> imagesURL; 
 	private int URLsNumber;	
-	
+
 	public Theme() {
 		this.imagesURL = this.getPhotosNames()
 				.stream()
@@ -21,17 +21,17 @@ public abstract class Theme implements Images {
 				.collect(Collectors.toList());
 		this.URLsNumber = this.imagesURL.size();
 	}
-	
+
 	public static String init() {
 		return Theme.getRandomSubTheme(Theme.class);
 	}
-	
+
 	public static String getPackageURL(Class className) {
-		
+
 		StringBuilder stringbuilder = new StringBuilder();
 		stringbuilder.append(System.getProperty("user.dir"));
 		stringbuilder.append("/");
-		
+
 		// If launched using eclipse (not added in .jar)
 		if (new File (stringbuilder.toString() + "/sources").exists()) {
 			stringbuilder.append("sources");
@@ -40,27 +40,29 @@ public abstract class Theme implements Images {
 		stringbuilder.append(className.getPackage().getName().replace(".", "/"));
 		return stringbuilder.toString();
 	}
-	
+
 	public static ArrayList<File> getPackageContent(Class className) {
 		File packageFolder = new File(Theme.getPackageURL(className));
 		return new ArrayList<File>(Arrays.asList(packageFolder.listFiles()));
 	}
-	
+
 	public static ArrayList<File> getSubPackages(Class className) {
 		ArrayList<File> files = Theme.getPackageContent(className);
 		files.removeIf(file -> !file.isDirectory());
 		return files;
 	}
-	
+
 	public static String getSubPackageClassName(File subPackage) throws FileNotFoundException {
-		
+
 		ArrayList<File> content = new ArrayList<File>(Arrays.asList(subPackage.listFiles()));
 		System.out.println(subPackage.getAbsolutePath());
+
+		// If using IDE like Eclipse, else (.jar)
 		if (subPackage.getAbsolutePath().contains("sources"))
 			content.removeIf(file -> !file.getName().endsWith(".java"));
 		else 
 			content.removeIf(file -> !file.getName().endsWith(".class"));
-		
+
 		if (content.isEmpty()) throw new FileNotFoundException("Can't find the corresponding java file for " + subPackage.getName());
 		String filePath = content.get(0).getPath();
 		return filePath.substring(filePath.lastIndexOf("fr"), filePath.lastIndexOf('.')).replace("/", ".");	
@@ -71,14 +73,14 @@ public abstract class Theme implements Images {
 	 *  
 	 *  Creates an ArrayList from the String[] returned by the list method of the file created with the package URL.
 	 *  FilenameFilter keeping only .jpg files
-	*/
+	 */
 	public ArrayList<String> getPhotosNames() {
 		ArrayList<File> files = new ArrayList<File>(Theme.getPackageContent(this.getClass()));
 		ArrayList<String> names = new ArrayList<String>(files.stream().map(file -> file.getName()).collect(Collectors.toList()));
 		names.removeIf(name -> !name.endsWith(".jpg"));
 		return names;
 	}
-		
+
 	public List<URL> getPhotos() {
 		return this.imagesURL;
 	}
@@ -90,10 +92,10 @@ public abstract class Theme implements Images {
 		for (int i = 0; i < photosNumber; i++) {
 			randomLink.add(this.getRandomPhotoURL());
 		}
-		
+
 		return randomLink;
 	}
-	
+
 	public URL getRandomPhotoURL() {
 		Random rand = new Random();
 		int value = rand.nextInt(URLsNumber);
@@ -102,11 +104,11 @@ public abstract class Theme implements Images {
 		}
 		return this.imagesURL.get(value);
 	}
-	
+
 	public static String getRandomSubTheme(Class classname) {
 		Random rand = new Random();
 		int value = 0;	
-		
+
 		try {
 			value = Math.abs(rand.nextInt()) % Theme.getSubPackages(classname).size();
 		} catch (ArithmeticException e) {
@@ -119,7 +121,7 @@ public abstract class Theme implements Images {
 			System.err.println(e.toString());
 		}
 		return null;
-		
+
 	}
 
 	public boolean isPhotoCorrect(URL url) {
