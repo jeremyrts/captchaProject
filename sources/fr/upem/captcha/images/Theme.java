@@ -9,9 +9,23 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+/**
+ * This is the class that handles themes dynamic locating
+ * 
+ * @author Jeremy Ratsimandresy
+ * @author Julian Bruxelle
+ */
+
 public abstract class Theme implements Images {
 
+	/**
+	 * The list of the images URL used to display theme images
+	 */
 	private List<URL> imagesURL; 
+	
+	/**
+	 * The number of URL
+	 */
 	private int URLsNumber;	
 
 	public Theme() {
@@ -21,11 +35,22 @@ public abstract class Theme implements Images {
 				.collect(Collectors.toList());
 		this.URLsNumber = this.imagesURL.size();
 	}
-
+	
+	/**
+	 * Initializes the captcha theme by picking a random theme in fr.umlv.captcha.images subpackages
+	 * 
+	 * @return String the name of the picked theme
+	 */
 	public static String init() {
 		return Theme.getRandomSubTheme(Theme.class);
 	}
 
+	/**
+	 * Gets the URL of the package in which a class is located
+	 * 
+	 * @param className the name of the class to locate
+	 * @return String the URL of the package in which the parameter class is located
+	 */
 	public static String getPackageURL(Class className) {
 
 		StringBuilder stringbuilder = new StringBuilder();
@@ -41,17 +66,37 @@ public abstract class Theme implements Images {
 		return stringbuilder.toString();
 	}
 
+	/**
+	 * Gets the content of the package in which a class is located
+	 * 
+	 * Uses the getPackageURL method of Theme
+	 * 
+	 * @param className the name of the class of which you want to get the content
+	 * @return The content (ArrayList<File>) of the package in which the parameter class is located
+	 */
 	public static ArrayList<File> getPackageContent(Class className) {
 		File packageFolder = new File(Theme.getPackageURL(className));
 		return new ArrayList<File>(Arrays.asList(packageFolder.listFiles()));
 	}
 
+	/**
+	 * Gets the subPackages (here subThemes) of the current package (ie. class package)
+	 * @param className the name of the class of which you want to get subpackages
+	 * @return The subpackages (ArrayList<File>) of the package in which the parameter class is located
+	 */
 	public static ArrayList<File> getSubPackages(Class className) {
 		ArrayList<File> files = Theme.getPackageContent(className);
 		files.removeIf(file -> !file.isDirectory());
 		return files;
 	}
 
+	/**
+	 * Gets the name of the class which represents the image theme of the package 
+	 * 
+	 * @param subPackage the File corresponding to the subpackage of which you want to get the  first class name (String format)
+	 * @return the class name of the subPackage first class (which is supposed to be the only one)
+	 * @throws FileNotFoundException if no class is found
+	 */
 	public static String getSubPackageClassName(File subPackage) throws FileNotFoundException {
 
 		ArrayList<File> content = new ArrayList<File>(Arrays.asList(subPackage.listFiles()));
@@ -68,11 +113,11 @@ public abstract class Theme implements Images {
 		return filePath.substring(filePath.lastIndexOf("fr"), filePath.lastIndexOf('.')).replace("/", ".");	
 	}
 
-	/*
-	 * @return ArrayList<String> : a list of photos names in the concerned folder
-	 *  
+	/** 
 	 *  Creates an ArrayList from the String[] returned by the list method of the file created with the package URL.
-	 *  FilenameFilter keeping only .jpg files
+	 *  Removes all non .jpg files
+	 * 
+	 *  @return ArrayList<String> : a list of photos names for the current theme
 	 */
 	public ArrayList<String> getPhotosNames() {
 		ArrayList<File> files = new ArrayList<File>(Theme.getPackageContent(this.getClass()));
@@ -105,6 +150,11 @@ public abstract class Theme implements Images {
 		return this.imagesURL.get(value);
 	}
 
+	/**
+	 * Gets randomly a subTheme for the current theme within current theme class package subpackages
+	 * @param classname the name of the current Theme class
+	 * @return the name (String) of the selected subTheme
+	 */
 	public static String getRandomSubTheme(Class classname) {
 		Random rand = new Random();
 		int value = 0;	
@@ -118,7 +168,7 @@ public abstract class Theme implements Images {
 		try {
 			return Theme.getSubPackageClassName(Theme.getSubPackages(classname).get(value));
 		} catch (FileNotFoundException e) {
-			System.err.println(e.toString());
+			e.printStackTrace();
 		}
 		return null;
 

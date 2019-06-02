@@ -36,8 +36,23 @@ public class Main {
 	 */
 	private static JFrame frame;
 
+	/**
+	 * The name of the current theme
+	 */
 	private static String theme;
+	
+	/**
+	 * The theme of the images the user has to pick
+	 * 
+	 * @see Theme
+	 */
 	private static Theme themeObject;
+	
+	/**
+	 * The global theme of the images
+	 * 
+	 * @see Theme
+	 */
 	private static Theme themeGlobal;
 	
 	
@@ -47,7 +62,6 @@ public class Main {
 	 * @param args	any argument, here it is not mandatory
  	 * 
 	 */
-	
 	public static void main(String[] args) {
 		int res = 2;
 		ui = new MainUI();
@@ -65,8 +79,7 @@ public class Main {
 	
 	/**
 	 * Handle the application initialization by picking a random theme. 
-	 */
-	
+	 */	
 	private static void init() {
 		theme = Theme.init();
 		
@@ -84,16 +97,13 @@ public class Main {
 	
 	/**
 	 * Handle the application progression by loading the levels as the user goes through difficulties. 
+	 * When user fails, the method loads a harder level by going deeper through files architecture
 	 * 
 	 * @param res	this integer let the application know at what state the user is, 0 if he failed, 1 if he won, 2 either way.
 	 */
-	
 	private static void play(int res) {
 		
 		loadLevel();
-		
-		System.out.println("etners play");
-		System.out.println(res);
 		
 		while (res == 2) {
 			res = checkState();
@@ -127,6 +137,10 @@ public class Main {
 		}
 	}
 	
+	/**
+	 * Randomly selects a number of 'good images' that the user has to pick to success
+	 * @return a random number of images that has to be picked within all the images
+	 */
 	private static int getNumberOfGoodImage() {
 		Random rand = new Random();
 		int value = rand.nextInt(4);

@@ -4,9 +4,9 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * Interface defining what Images object are able to do. Its primary use is implemented in the class ImagesSet.
+ * Interface defining what Images object are able to do. Its primary use is implemented in the class Theme.
  * 
- * @see ImagesSet
+ * @see Theme
  * 
  * @author Jeremy Ratsimandresy
  * @author Julian Bruxelle

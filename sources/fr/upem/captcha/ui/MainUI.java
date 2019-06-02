@@ -51,10 +51,8 @@ public class MainUI {
 	 * Display a new frame related to the state of the captcha where in : level, themes, etc.
 	 * This is the main UI method as it's called everytime we start the application or we update its state.
 	 * 
-	 * @param currentThemeName	string representing the class type of the global theme (Animal or Panneau on level 1 for instance).
-	 * @param currentThemeDir	string representing the package of the class type of the global theme.
-	 * @param nextThemeName	string representing the class type of the subtheme, corresponding to the good answers (Shiba or PanneauRouge on level 1 for instance).
-	 * @param nextThemeDir	string representing the package of the class type of the subtheme.
+	 * @param themeObject the theme of images that have to be found
+	 * @param themeGlobal the global theme of images
 	 * @param frame	the current frame used in the application.
 	 * @param numberGoodImages	number of images from the subtheme to display, corresponding to the number of good answers.
 	 */
@@ -134,7 +132,6 @@ public class MainUI {
 	 * 
 	 * @param themeGlobal	Images instance representing the global theme class. 
 	 * @param themeObject	Images instance representing the specific theme class.
-	 * @param imagesToDisplay	the ArrayList to fill up.
 	 * @param numberGoodImages	number of images from the subtheme to display, corresponding to the number of good answers.
 	 * 
 	 * @return the ArrayList filled up with the URLs of the images to display.
